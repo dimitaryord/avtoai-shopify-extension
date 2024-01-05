@@ -11,5 +11,8 @@ node_modules
 database.sqlite
 
 .env
+shopify.app.toml
 package-lock.json
 yarn.lock
+
+

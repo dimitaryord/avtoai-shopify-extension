@@ -1,7 +1,7 @@
 import {
   Page,
   Layout,
-  LegacyCard,
+  Card,
   FormLayout,
   TextField,
   TextContainer,
@@ -28,7 +28,7 @@ export function Section2() {
         </div>
       </Layout.Section>
       <Layout.Section>
-        <LegacyCard sectioned>
+        <Card sectioned>
           <FormLayout>
             <TextField
               label="Things that the Avto the Upseller should know about your brand?"
@@ -36,7 +36,7 @@ export function Section2() {
               placeholder="Avto should know..."
             />
           </FormLayout>
-        </LegacyCard>
+        </Card>
       </Layout.Section>
     </Layout>
 

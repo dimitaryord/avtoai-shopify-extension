@@ -1,0 +1,20 @@
+@media screen and (max-width: 1280px) {
+    .avtoai-assistant-side-drawer{
+        width: 40%;
+    }
+}
+
+
+@media screen and (max-width: 1024px) {
+    .avtoai-assistant-side-drawer{
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .avtoai-assistant-side-drawer{
+        width: 100%;
+        right: 0px;
+        left: 0px;
+    }
+}

@@ -11,7 +11,7 @@ export function SingleChoiceListExample() {
     <ChoiceList
       title="Company name"
       choices={[
-        {label: 'Cosmetics', value: 'osmetics'},
+        {label: 'Cosmetics', value: 'cosmetics'},
         {label: 'Electronics', value: 'electronics'},
         {label: 'Apparel', value: 'apparel'},
       ]}

@@ -1,0 +1,29 @@
+@import "widget-button.css";
+@import "chat-drawer.css";
+@import "animations.css";
+@import "media-queries.css";
+
+.avtoai-assistant-container{
+    position: fixed;
+    height: 0;
+    width: 0;
+    top: 0px;
+    left: 0px;
+    z-index:9999;
+    font-family: 'Roboto Slab';
+}
+
+.avtoai-assistant-p-text{
+    font-size: 16px;
+    color: var(--avtoai-assistant-colors-text-color);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.avtoai-assistant-p-text-shadow{
+    font-size: 16px;
+    color: var(--avtoai-assistant-colors-text-color);
+    font-weight: bold;
+    text-shadow: 1px 1px 2px var(--avtoai-assistant-colors-text-shadow);
+}
+

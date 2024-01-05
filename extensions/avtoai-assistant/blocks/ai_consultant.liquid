@@ -1,0 +1,119 @@
+<div id="avtoai-assistant-bot-container" class="avtoai-assistant-container"
+  data-avtoai-color-theme-app="{{ block.settings.color_theme }}"
+  data-avtoai-chat-position="{{ block.settings.chat_position }}"
+  data-avotai-theme-app="{{ block.settings.theme }}"
+  data-avtoai-widget-button-position="{{ block.settings.widget_button_position }}"
+  data-avtoai-widget-button-color="{{ block.settings.widget_button_color }}"
+  data-avtoai-widget-button-shadow="{{ block.settings.widget_button_shadow }}"
+  {% if block.settings.widget_image != blank %}
+    data-avtoai-widget-icon-url="{{ block.settings.widget_image | image_url }}"
+    {% else %}
+    data-avtoai-widget-icon-url="{{ 'default_widget_icon.png' | asset_url }}"
+  {% endif %}>
+</div>
+
+
+<link href='https://fonts.googleapis.com/css?family=Roboto Slab' rel='stylesheet'>
+<link rel="stylesheet" type="text/css" href="{{ 'style.css' | asset_url }}">
+
+<script type="module" src="{{ 'index.js' | asset_url }}" defer></script>
+
+
+{% schema %}
+  {
+    "name": "Avto AI Assistant",
+    "target": "body",
+    "settings": [
+      {
+        "type": "radio",
+        "id": "theme",
+        "label": "Theme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light"
+          },
+          {
+            "value": "dark",
+            "label": "Dark"
+          }
+        ],
+        "default": "light"
+      },
+      {
+        "type": "radio",
+        "id": "chat_position",
+        "label": "Chat Position",
+        "options": [
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "color",
+        "id": "color_theme",
+        "label": "Color Theme",
+        "default": "#222831"
+      },
+      {
+        "type": "select",
+        "id": "widget_button_position",
+        "label": "Widget Button Position",
+        "options": [
+          {
+            "value": "bottom-right",
+            "label": "Bottom Right"
+          },
+          {
+            "value": "bottom-left",
+            "label": "Bottom Left"
+          },
+          {
+            "value": "top-right",
+            "label": "Top Right"
+          },
+          {
+            "value": "top-left",
+            "label": "Top Left"
+          }
+        ],
+        "default": "bottom-right"
+      },
+      {
+        "type": "color",
+        "id": "widget_button_color",
+        "label": "Widget Button Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "radio",
+        "id": "widget_button_shadow",
+        "label": "Widget Button Shadow",
+        "options": [
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "default": "yes"
+      },
+      {
+        "type": "image_picker",
+        "id": "widget_image",
+        "label": "Widget Image"
+      }
+    ]
+  }
+{% endschema %}
+
