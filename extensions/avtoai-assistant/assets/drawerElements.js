@@ -15,7 +15,6 @@ class SideDrawer extends Element {
         const sideDrawer = document.createElement("div")
         sideDrawer.classList.add("avtoai-assistant-side-drawer")
         sideDrawer.id = "avtoai-assistant-side-drawer"
-        sideDrawer.style.display = "block"
 
         if(side == "right"){
             sideDrawer.style.right = "10px"

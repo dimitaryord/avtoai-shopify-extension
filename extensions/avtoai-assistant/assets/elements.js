@@ -34,17 +34,21 @@ class ButtonElement extends Element {
 
     }
 }
+class ThemeCloseButton extends Element {
+    constructor(container){
+        const buttonContainer = document.createElement("div")
+        buttonContainer.classList.add("avtoai-assistant-theme-close-button-container")
+        buttonContainer.id = "avtoai-assistant-theme-close-button-container"
 
+        for(let i = 0; i < 2; i++){
+            const cross = document.createElement("div")
+            cross.classList.add("avtoai-assistant-theme-close-button-cross")
+            cross.style.display = "block"
+            buttonContainer.appendChild(cross)
+        }
 
-class HeaderSection extends Element {
-    constructor(container, flexDirection="column"){
-        const header = document.createElement("div")
-        header.classList.add("avtoai-assistant-chat-header")
-        header.style.display = "flex"
-        header.style.flexDirection = flexDirection
-        header.id = "avtoai-assistant-header"
-        super(container, header)
-        return header
+        super(container, buttonContainer)
+        this.closeButton = buttonContainer
     }
 }
 
@@ -59,7 +63,7 @@ class ConditionalRendering{
 } 
 
 export default {
-    HeaderSection,
     TextP,
+    ThemeCloseButton,
     ConditionalRendering
 }

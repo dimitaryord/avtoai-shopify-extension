@@ -6,15 +6,15 @@ function isLightColor(hex) {
     let g = (rgb >> 8) & 0xff
     let b = (rgb >> 0) & 0xff
 
-    let luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+    let luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b)
 
-    let threshold = 0.5
+    let threshold = 150
 
     return luminance > threshold
 }
 
 export function configureGlobalCSSThemeVariables(colorTheme, appTheme, widgetButtonTheme){
-    const appThemeColor = appTheme == "light" ? "white" : "#222831"
+    const appThemeColor = appTheme == "light" ? "#fefefe" : "#222831"
     const boxShadowColor = appTheme == "light" ? "#000000aa" : "#ffffffab"
     const boxBorderColor = appTheme == "light" ? "#000000aa" : "#ffffffab"
     const textColor = appTheme == "light" ? "black" : "white" 

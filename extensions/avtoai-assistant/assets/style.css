@@ -27,3 +27,37 @@
     text-shadow: 1px 1px 2px var(--avtoai-assistant-colors-text-shadow);
 }
 
+.avtoai-assistant-theme-close-button-container{
+    border-radius: 50%;
+    display: flex;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.avtoai-assistant-theme-close-button-container:hover{
+    background-color: #afafaf;
+    .avtoai-assistant-theme-close-button-cross{
+        opacity: 1;
+    }
+}
+
+.avtoai-assistant-theme-close-button-cross{
+    position: absolute;
+    opacity: 0.8;
+    height: 30px;
+    width: 3px;
+    background-color: var(--avtoai-assistant-colors-color-theme-text-color);
+}
+
+.avtoai-assistant-theme-close-button-cross:nth-child(1) {
+    transform: rotate(45deg);
+}
+
+.avtoai-assistant-theme-close-button-cross:nth-child(2) {
+    transform: rotate(-45deg);
+}
+

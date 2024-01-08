@@ -2,6 +2,7 @@ import ProductObserver from "./productObserver.js"
 import { configureGlobalCSSThemeVariables } from "./config.js"
 import WidgetElements from "./widgetElements.js"
 import DrawerElements from "./drawerElements.js"
+import ChatElements from "./chatElements.js"
 import Elements from "./elements.js"
 
 function setupExtension() {
@@ -23,7 +24,11 @@ function setupExtension() {
     const widgetSection = new WidgetElements.WidgetSection(container, widgetButtonPosition, widgetIconUrl, widgetButtonShadow)
 
     const sideDrawer = new DrawerElements.SideDrawer(container, chatPosition, widgetSection)
-    const headerSection = new Elements.HeaderSection(sideDrawer.content, "flex")
+    const headerSection = new ChatElements.ChatHeader(sideDrawer.content, "Avto AI Chatbot", widgetIconUrl)
+    headerSection.closeButton.onclick = () => sideDrawer.close()
+
+    const chatSection = new ChatElements.ChatSection(sideDrawer.content)
+    const actionSection = new ChatElements.ActionSection(sideDrawer.content)
 
     widgetSection.button.onclick = () => {
         if(!sideDrawer.isOpen) 
