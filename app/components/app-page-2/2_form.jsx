@@ -1,46 +1,78 @@
-import React, { useState } from 'react';
-import { FormLayout, TextField, InlineError } from '@shopify/polaris';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
+import { FormLayout, TextField, InlineError, Button } from '@shopify/polaris';
+import { z } from 'zod';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
+const formSchema = z.object({
+    storeName: z.string().min(1, "Store name is required"),
+    accountEmail: z.string().email("Invalid email address"),
+});
 
-export function Form() {
-    // State for storing input values and error message
+export const Form = forwardRef(({ onSuccessfulSubmit }, ref) => {
     const [storeName, setStoreName] = useState('');
     const [accountEmail, setAccountEmail] = useState('');
-    const [emailError, setEmailError] = useState('');
-  
-    // Email validation regex pattern
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-    // Handle changes in the store name field
+    const [errors, setErrors] = useState({});
+
+    const mutation = useMutation((newData) => {
+        return axios.post('/api/submit-form', newData);
+    });
+
+   
+
+
     const handleStoreNameChange = (value) => setStoreName(value);
-  
-    // Handle changes in the account email field
-    const handleAccountEmailChange = (value) => {
-      setAccountEmail(value);
-      if (emailRegex.test(value)) {
-        setEmailError(''); // Clear error if the email is valid
-      } else {
-        setEmailError('Enter a valid email address.'); // Set error message
+    const handleAccountEmailChange = (value) => setAccountEmail(value);
+
+
+
+
+    useImperativeHandle(ref, () => ({
+      submitForm: () => {
+          handleSubmit(new Event('submit'));
       }
+  }));
+
+    
+    const handleSubmit = async () => {
+        try {
+            const data = formSchema.parse({ storeName, accountEmail });
+            mutation.mutate(data, {
+                onSuccess: () => {
+                    onSuccessfulSubmit && onSuccessfulSubmit(data);
+                }
+            });
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const newErrors = error.errors.reduce((acc, curr) => {
+                    acc[curr.path[0]] = curr.message;
+                    return acc;
+                }, {});
+                setErrors(newErrors);
+            }
+        }
     };
-  
+
     return (
-      <FormLayout>
-        <TextField
-          label="Store name"
-          value={storeName}
-          onChange={handleStoreNameChange}
-          autoComplete="on"
-        />
-        <TextField
-          type="email"
-          label="Account email"
-          value={accountEmail}
-          onChange={handleAccountEmailChange}
-          autoComplete="email"
-          error={emailError ? true : false}
-        />
-        {emailError && <InlineError message={emailError} fieldID="accountEmail" />}
-      </FormLayout>
+        <FormLayout>
+            <TextField
+                label="Store name"
+                value={storeName}
+                onChange={handleStoreNameChange}
+                autoComplete="on"
+                error={errors.storeName}
+            />
+            <TextField
+                type="email"
+                label="Account email"
+                value={accountEmail}
+                onChange={handleAccountEmailChange}
+                autoComplete="email"
+                error={errors.accountEmail}
+            />
+            {mutation.isError && (
+                <InlineError message="An error occurred while submitting the form" />
+            )}
+        </FormLayout>
     );
-  }
+});
