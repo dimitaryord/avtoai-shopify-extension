@@ -9,6 +9,7 @@ const formSchema = z.object({
     accountEmail: z.string().email("Invalid email address"),
 });
 
+// eslint-disable-next-line react/display-name
 export const Form = forwardRef(({ onSuccessfulSubmit }, ref) => {
     const [storeName, setStoreName] = useState('');
     const [accountEmail, setAccountEmail] = useState('');

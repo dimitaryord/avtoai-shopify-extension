@@ -1,0 +1,82 @@
+{
+    "ProductInformation": {
+        "title" : "Product Information",
+        "description" : "We want to know more about your brand. This will help us to create a better upsell assistant that will be able to offer the best possible products to your customers.",
+        "components" : [
+            {
+                "type" : "options",
+                "id" : "industry",
+                "label" : "In which industry is your Shopify store?",
+                "options" : ["Default"]
+            },
+            {
+                "type" : "input",
+                "id": "brandInfo",
+                "label" : "Brand Information",
+                "placeholder" : "Describe your brand here",
+                "multiline" : 3,
+                "rules" : "required"
+            },
+            {
+                "type" : "input",
+                "id": "storeName",
+                "label" : "Store name",
+                "rules" : "required"
+            },
+            {
+                "type" : "input",
+                "id": "accountEmail",
+                "label" : "Account email",
+                "inputType" : "email",
+                "rules": {
+                    "check": "email",
+                    "min" : 1
+                }
+            },
+            {
+                "type" : "choice",
+                "id": "companyAspect",
+                "title" : "Company aspect",
+                "choices" : [
+                    {"label": "Cosmetics", "value" : "cosmetics" },
+                    {"label": "Electronics", "value" : "electronics"},
+                    {"label" : "Apparel", "value" : "apparel" }
+                ]
+            }
+
+        ]
+    },
+    "Brand Identity": {
+        "title" : "Brand Identity",
+        "description" : "The more Avto knows about your brand, the better it can serve your customers and offer them the best possible products. Here is a link explained as easy as possible so everybody can get it. More accurate information will lead to awesome results :)",
+        "components" : [
+            {
+                "type" : "choice",
+                "id" : "companyIndustry",
+                "title" : "In which industry is your Shopify store?",
+                "choices" : [{"label": "18-24", "value": "19-24"},
+                {"label": "25-34", "value": "25-34"},
+                {"label": "35-44", "value": "35-44"},
+                {"label": "45-54", "value": "45-54"},
+                {"label": "55-64", "value": "55-64"},
+                {"label": "65+", "value": "65+"}]
+            },
+            {
+                "type" : "input",
+                "id": "problemSolve",
+                "label" : "What problem does your Company solve?",
+                "placeholder" : "My company solves...",
+                "multiline" : 3,
+                "rules" : "required"
+            },
+            {
+                "type" : "input",
+                "id": "solution",
+                "label" : "What is the solution you provide?",
+                "placeholder" : "Our solution is...",
+                "multiline" : 3,
+                "rules" : "required"
+            }
+        ]
+    }
+}

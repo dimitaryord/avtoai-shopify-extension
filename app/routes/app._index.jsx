@@ -1,59 +1,48 @@
-import React, { useState } from 'react';
-import FirstStep from '../steps/FirstStep';
-import SecondStep from '../steps/SecondStep';
-import ThirdStep from '../steps/ThirdStep';
-import { ProgressBar } from "@shopify/polaris";
+import StepElement from "../steps/StepElement";
+import { Card, Page, Layout, BlockStack, ProgressBar } from "@shopify/polaris";
+
+import { useEffect, useState, useCallback } from "react";
+
+import useFormStore from "../store";
+import setupObject from "../setup/setup.json";
 
 function MainForm() {
-    const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 3; // Updated to reflect 4 total steps
+  const [totalSteps, setTotalSteps] = useState(1);
+  const [currentStep, setCurrentSteps] = useState(1);
 
-    // Function to proceed to the next step
-    const nextStep = () => {
-        if(currentStep < totalSteps) {
-            setCurrentStep(currentStep + 1);
-        }
-        // Add any final step handling if necessary
+  const totalStepsStore = useFormStore((state) => state.totalSteps);
+  const currentStepStore = useFormStore((state) => state.currentStep);
+  const initialFormDataStore = useFormStore((state) => state.formData);
+
+  useEffect(() => {
+    setTotalSteps(totalStepsStore);
+    setCurrentSteps(currentStepStore);
+  }, [totalStepsStore, currentStepStore]);
+
+  const getStepElementData = useCallback(() => {
+    return {
+      ...Object.values(setupObject)[currentStep - 1],
+      initialFormData: initialFormDataStore,
+      isLastStep: currentStep == totalSteps,
     };
+  }, [currentStep, totalSteps, initialFormDataStore]);
 
-    // Function to go back to previous step
-    const prevStep = () => {
-        if(currentStep > 1) {
-            setCurrentStep(currentStep - 1);
-        }
-    };
+  const progress = (currentStep / totalSteps) * 100;
 
-    // Function to render the current step
-    const renderStep = () => {
-        switch(currentStep) {
-            case 1:
-                return <FirstStep nextStep={nextStep} />;
-            case 2:
-                return <SecondStep nextStep={nextStep} prevStep={prevStep} />;
-            case 3:
-                return <ThirdStep prevStep={prevStep} />;
-            default:
-                // In case of an undefined step, redirect to the first step
-                return <FirstStep nextStep={nextStep} />;
-        }
-    };
-    
-    
-
-    // Calculate the progress (for the ProgressBar)
-    const progress = (currentStep / totalSteps) * 100;
-
-    return (
-        <div>
-            {renderStep()}
-            {/* Progress Indicator */}
-            <ProgressBar progress={progress} size="small" />
-            {/* Navigation Buttons */}
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-           
-            </div>
-        </div>
-    );
+  return (
+    <Page>
+      <Layout>
+        <Layout.Section>
+          <Card>
+            <BlockStack gap="200">
+              <StepElement stepElementData={getStepElementData()} />
+              <ProgressBar progress={progress} size="small" />
+            </BlockStack>
+          </Card>
+        </Layout.Section>
+      </Layout>
+    </Page>
+  );
 }
 
 export default MainForm;

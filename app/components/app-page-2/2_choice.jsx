@@ -9,7 +9,7 @@ export function SingleChoiceListExample() {
 
   return (
     <ChoiceList
-      title="Company name"
+      title="Company aspect"
       choices={[
         {label: 'Cosmetics', value: 'cosmetics'},
         {label: 'Electronics', value: 'electronics'},
