@@ -84,18 +84,19 @@ export function createFormElement(
 export function useFormDataInit(initialFormData, components, setFormData) {
   useEffect(() => {
     if (initialFormData) setFormData(initialFormData);
+    else {
+      setFormData(
+        components.reduce((object, component) => {
+          if (component.type == "input") object[component.id] = "";
+          else if (component.type == "options")
+            object[component.id] = component.options[0];
+          else if (component.type == "choice")
+            object[component.id] = component.choices[0].value;
 
-    setFormData(
-      components.reduce((object, component) => {
-        if (component.type == "input") object[component.id] = "";
-        else if (component.type == "options")
-          object[component.id] = component.options[0];
-        else if (component.type == "choice")
-          object[component.id] = component.choices[0].value;
-
-        return object;
-      }, {})
-    );
+          return object;
+        }, {})
+      );
+    }
   }, [setFormData, components, initialFormData]);
 }
 
@@ -126,15 +127,15 @@ function createElementRule(component) {
     });
 
   if (rules.between) {
-    const message = `${component.label} should be between ${rules.between[0]} and ${rules.between[1]} characters long`
+    const message = `${component.label} should be between ${rules.between[0]} and ${rules.between[1]} characters long`;
 
     basic = basic.min(rules.between[0], {
       message: message,
     });
 
     basic = basic.max(rules.between[1], {
-        message: message,
-    })
+      message: message,
+    });
   }
 
   if (rules.check == "email")

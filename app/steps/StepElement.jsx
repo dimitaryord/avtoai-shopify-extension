@@ -37,13 +37,24 @@ function StepElement({ stepElementData }) {
 
   const handleSubmit = useCallback(() => {
     const validationResult = zodFormCheck.safeParse(formData);
+
     if (validationResult.success) {
       setFormDataStorage(formData);
+      setErrors({});
       nextStep();
-    } else {
-      setErrors(createZodIssues(validationResult));
+    } 
+    else return setErrors(createZodIssues(validationResult));
+
+    if (stepElementData.isLastStep) {
+      console.log("Make a request happen.");
     }
-  }, [formData, nextStep, setFormDataStorage, zodFormCheck]);
+  }, [
+    formData,
+    nextStep,
+    setFormDataStorage,
+    zodFormCheck,
+    stepElementData.isLastStep,
+  ]);
 
   const back = useCallback(() => {
     setFormDataStorage(formData);
