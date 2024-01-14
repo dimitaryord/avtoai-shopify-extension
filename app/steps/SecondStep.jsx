@@ -13,8 +13,6 @@ const SecondStep = ({ prevStep, nextStep }) => {
 
     // Update state when a different dropdown option is selected
     const handleSelectChange = (value) => setSelectedOption(value);
-
-    // Update state when brand info is inputted
     const handleBrandInfoChange = (value) => setBrandInfo(value);
 
     // Function to be called on successful form submission
