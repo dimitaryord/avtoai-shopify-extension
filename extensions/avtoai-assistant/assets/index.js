@@ -5,6 +5,9 @@ import DrawerElements from "./drawerElements.js"
 import ChatElements from "./chatElements.js"
 import Elements from "./elements.js"
 
+const res = await fetch("/apps/server/chat")
+console.log(res)
+
 function setupExtension() {
     const container = document.getElementById("avtoai-assistant-bot-container")
 

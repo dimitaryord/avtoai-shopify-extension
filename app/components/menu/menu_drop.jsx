@@ -3,10 +3,10 @@ import {NoteMinor} from '@shopify/polaris-icons';
 import {useState, useCallback} from 'react';
 
 export function DropZoneExample() {
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState([]);
 
   const handleDropZoneDrop = useCallback(
-    (_dropFiles: File[], acceptedFiles: File[], _rejectedFiles: File[]) =>
+    (_dropFiles, acceptedFiles, _rejectedFiles) =>
       setFiles((files) => [...files, ...acceptedFiles]),
     [],
   );

@@ -8,6 +8,8 @@ import {
 } from "@shopify/polaris";
 import { useState, useCallback } from "react";
 
+import axios from "axios";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   useZodForm,
@@ -35,7 +37,7 @@ function StepElement({ stepElementData }) {
 
   const zodFormCheck = useZodForm(stepElementData.components);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const validationResult = zodFormCheck.safeParse(formData);
 
     if (validationResult.success) {
@@ -46,8 +48,8 @@ function StepElement({ stepElementData }) {
     else return setErrors(createZodIssues(validationResult));
 
     if (stepElementData.isLastStep) {
-      console.log("Make a request happen.");
-    }
+      console.log("request")
+    }      
   }, [
     formData,
     nextStep,

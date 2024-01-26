@@ -1,11 +1,11 @@
 {
     "ProductInformation": {
         "title" : "Product Information",
-        "description" : "Knowing more about your brand products and customer will help us create AVTO much better than it's default version. Try to view from this point, as you are trying to explain to a friend what are you are selling, why are people buying it, what separetaes you from others, who are you selling too. You don't have to think of any question just go trough the form and answer the questions the way you want. If you don't have idea what to answer just book a call from this link and whitin 30 mins someone from our team will help you out. Thank you again for installing our product, here is the email of our founders if you have any questions feel free to contact them.",
+        "description" : "Knowing more about your brand products and customer will help us create AVTO much better than it's default version. Try to view from this point, as you are trying to explain to a friend what are you are selling, why are people buying it, what separates you from others, who are you selling too. You don't have to think of any question just go trough the form and answer the questions the way you want. If you don't have idea what to answer just book a call from this link and within 30 mins someone from our team will help you out. Thank you again for installing our product, here is the email of our founders if you have any questions feel free to contact them.",
         "components" : [
             {
                 "type" : "input",
-                "id" : "storename",
+                "id" : "storeName",
                 "label" : "What is the name of your Shopify Store?",
                 "options" : ["Default"],
                 "rules" : "required"
@@ -34,7 +34,7 @@
     },
     "Brand Identity": {
         "title" : "Brand Identity",
-        "description" : "We would like to know a littel bit more :)",
+        "description" : "We would like to know a little bit more :)",
         "components" : [
             {
                 "type" : "input",
@@ -69,8 +69,8 @@
 
         ]
     },
-    "Other Informamtion": {
-        "title" : "Other Informamtion",
+    "Other Information": {
+        "title" : "Other Information",
         "description" : "Just if you want to tell us something more about your brand, you can do it here, if not just click next.",
         "components" : [
             {
@@ -83,7 +83,7 @@
             },
             {
                 "type" : "choice",
-                "id": "typeofanswering",
+                "id": "typeOfAnswering",
                 "title" : "How would you like your bot to answer?",
                 "choices" : [{"label": "Friendly", "value": "friendly"},
                 {"label": "Professional", "value": "professional"},

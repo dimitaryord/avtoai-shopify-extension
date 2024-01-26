@@ -1,4 +1,6 @@
 import Elements, { Element } from "./elements.js"
+import createSendButtonSVG from "./sendButton.js"
+import createQuestionMarkSVG from "./questionMark.js"
 
 class ChatHeader extends Element {
     constructor(container, chatbotTitle, iconImage){
@@ -98,7 +100,7 @@ class ActionSection extends Element {
 
         const startersButtonContainer = document.createElement("div")
         startersButtonContainer.classList.add("avtoai-assistant-actions-starters-button-container")
-        startersButtonContainer.style.display = "flex"
+        startersButtonContainer.innerHTML = createQuestionMarkSVG("var(--avtoai-assistant-colors-color-theme-text-color)")
         startersButtonContainer.id = "avtoai-assistant-actions-starters-button-container"
 
         const inputButtonContainer = document.createElement("div")
@@ -110,6 +112,11 @@ class ActionSection extends Element {
         input.classList.add("avtoai-assistant-actions-input")
         input.placeholder = "Chat here..."
         inputButtonContainer.appendChild(input)
+
+        const sendButton = document.createElement("div")
+        sendButton.innerHTML = createSendButtonSVG("var(--avtoai-assistant-colors-color-theme-text-color)")
+        sendButton.classList.add("avtoai-assistant-actions-send")
+        inputButtonContainer.appendChild(sendButton)
 
         actionContainer.appendChild(startersButtonContainer)
         actionContainer.appendChild(inputButtonContainer)

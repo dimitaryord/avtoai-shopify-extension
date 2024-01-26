@@ -92,6 +92,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    outline: none;
+    outline-offset: 0px;
     border-radius: 50%;
     background-color: var(--avtoai-assistant-colors-color-theme);
     border: var(--avtoai-assistant-colors-widget-box-border) solid 1px;
@@ -107,13 +109,33 @@
 
 .avtoai-assistant-actions-input{
     height: 60px;
-    width: 95%;
+    width: 98%;
     font-size: 16px;
     border-radius: 50px;
     border: none;
+    outline: none;
+    outline-offset: 0px;
     padding: 1rem;
     color: var(--avtoai-assistant-colors-color-theme-text-color);
     background-color: var(--avtoai-assistant-colors-color-theme);
     border: var(--avtoai-assistant-colors-widget-box-border) solid 1px;
     box-shadow: var(--avtoai-assistant-colors-widget-box-shadow) 0.1rem 0.1rem;
+}
+
+.avtoai-assistant-actions-input:focus,
+.avtoai-assistant-actions-starters-button-container:hover{
+    outline: 1px solid var(--avtoai-assistant-colors-text-color);
+}
+
+.avtoai-assistant-actions-input::placeholder{
+    color: var(--avtoai-assistant-colors-color-theme-text-color);
+}
+
+.avtoai-assistant-actions-send{
+    position: absolute;
+    right: 2%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
