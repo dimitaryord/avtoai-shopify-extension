@@ -109,25 +109,25 @@ function createElementRule(component) {
       : zod.string("value is not a string");
 
   if (rules == "required")
-    return basic.min(1, { message: `${component.label} is required.` });
+    return basic.min(1, { message: `${component.errorName} is required.` });
 
   if (rules.min)
     if (rules.min == 1)
       basic = basic.min(rules.min, {
-        message: `${component.label} is required.`,
+        message: `${component.errorName} is required.`,
       });
     else
       basic = basic.min(rules.min, {
-        message: `${component.label} should be at least ${rules.min} characters long.`,
+        message: `${component.errorName} should be at least ${rules.min} characters long.`,
       });
 
   if (rules.max)
     basic = basic.max(rules.max, {
-      message: `${component.label} shouldn't be longer than ${rules.max} characters long.`,
+      message: `${component.errorName} shouldn't be longer than ${rules.max} characters long.`,
     });
 
   if (rules.between) {
-    const message = `${component.label} should be between ${rules.between[0]} and ${rules.between[1]} characters long`;
+    const message = `${component.errorName} should be between ${rules.between[0]} and ${rules.between[1]} characters long`;
 
     basic = basic.min(rules.between[0], {
       message: message,

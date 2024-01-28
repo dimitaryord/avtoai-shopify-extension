@@ -8,7 +8,8 @@
                 "id" : "storeName",
                 "label" : "What is the name of your Shopify Store?",
                 "options" : ["Default"],
-                "rules" : "required"
+                "rules" : "required",
+                "errorName" : "Store Name"
             },
             {
                 "type" : "input",
@@ -16,7 +17,8 @@
                 "label" : "Brand Information",
                 "placeholder" : "Describe your brand here",
                 "multiline" : 4,
-                "rules" : "required"
+                "rules" : "required",
+                "errorName" : "Brand Information"
             },
             {
                 "type" : "input",
@@ -26,7 +28,8 @@
                 "rules": {
                     "check": "email",
                     "min" : 1
-                }
+                },
+                "errorName" : "Account Email"
             }
             
 
@@ -41,7 +44,8 @@
                 "id": "robotName",
                 "label" : "What would you like your bot to be called?",
                 "placeholder" : "My bot name should be...",
-                "rules" : "required"
+                "rules" : "required",
+                "errorName" : "Robot Name"
             
 
             },
@@ -63,6 +67,7 @@
                 {"label": "Health care", "value": "healthcare"},
                 {"label": "Apparel", "value": "apparel"}]
                 
+                
                
             }
             
@@ -79,7 +84,8 @@
                 "label" : "Something that we need to know about your brand?",
                 "placeholder" : "Something specific about my company is...",
                 "multiline" : 4, 
-                "rules" : "required"
+                "rules" : "required",
+                "errorName" : "Other Information"
             },
             {
                 "type" : "choice",
@@ -91,6 +97,7 @@
                 {"label": "Sarcastic", "value": "sarcastic"},
                 {"label": "Other", "value": "other"}]
                 
+                
 
             },
             {
@@ -99,6 +106,7 @@
                 "label" : "Something important that the bot needs to know about your brand?",
                 "placeholder" : "Something specific about my company is...",
                 "multiline" : 2
+                
             }
             
 
