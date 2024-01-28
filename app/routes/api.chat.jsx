@@ -1,5 +1,7 @@
 import { verifyAppProxyHmac } from 'shopify-application-proxy-verification';    
 
+const usersAssistant = new Map()
+
 export const action = async ( { request }) => {
     if(verifyAppProxyHmac(request.query, process.env.SHOPIFY_API_SECRET || "")) {
         return new Response(JSON.stringify({ message : "Query valid"}), {

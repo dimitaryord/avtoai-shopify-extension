@@ -46,8 +46,6 @@
                 "placeholder" : "My bot name should be...",
                 "rules" : "required",
                 "errorName" : "Robot Name"
-            
-
             },
             {
                 "type" : "choice",
@@ -61,11 +59,11 @@
                 {"label": "Sports & Recreation", "value": "sports"},
                 {"label": "Electronics", "value": "electronics"},
                 {"label": "Toys & Games", "value": "toys"},
-                {"label": "Other", "value": "other"},
                 {"label": "Cosmetics", "value": "cosmetics"},
-                {"label": "Electronics", "value": "electronics"},
                 {"label": "Health care", "value": "healthcare"},
-                {"label": "Apparel", "value": "apparel"}]
+                {"label": "Apparel", "value": "apparel"},
+                {"label": "Other", "value": "other"}
+            ]
                 
                 
                
