@@ -1,6 +1,5 @@
 import {
   BlockStack,
-  Text,
   Form,
   FormLayout,
   Button,
@@ -48,7 +47,7 @@ function StepElement({ stepElementData }) {
     else return setErrors(createZodIssues(validationResult));
 
     if (stepElementData.isLastStep) {
-      console.log("request")
+     await axios.post("/app/setup", { formData: formData });
     }      
   }, [
     formData,
@@ -67,14 +66,17 @@ function StepElement({ stepElementData }) {
     <Form onSubmit={handleSubmit}>
       <FormLayout>
         <BlockStack gap="500">
-          <BlockStack gap="200">
-            <Text as="h1" variant="heading3xl">
-              {stepElementData.title}
-            </Text>
-            <Text variant="bodyLg" as="p">
-              {stepElementData.description}
-            </Text>
-          </BlockStack>
+          <header className="mb-5">
+            <BlockStack gap="500">
+              <h1 className="font-bold text-5xl">
+                {stepElementData.title}
+              </h1>
+              <p className="font-medium mx-2 text-sm">
+                  {stepElementData.description}
+              </p>
+            </BlockStack>
+          </header>
+
 
           <QueryClientProvider client={queryClient}>
             <BlockStack gap="200">
@@ -92,7 +94,7 @@ function StepElement({ stepElementData }) {
 
           <InlineStack gap="300">
             <Button onClick={back}>Previous Step</Button>
-            <Button primary submit>
+            <Button variant="primary" submit>
               Next Step
             </Button>
           </InlineStack>

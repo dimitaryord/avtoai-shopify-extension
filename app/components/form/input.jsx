@@ -8,6 +8,7 @@ function Input({ id, label="", placeholder="", multiline=1, value, onChange }) {
         multiline={multiline}
         placeholder={placeholder}
         autoComplete="on"
+        size="medium"
         value={value}
         onChange={onChange}
     />

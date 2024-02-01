@@ -1,10 +1,22 @@
-import StepElement from "../steps/StepElement";
-import { Card, Page, Layout, BlockStack, ProgressBar } from "@shopify/polaris";
-
+import { json } from "@remix-run/node";
+import { Card, Page, Layout, ProgressBar } from "@shopify/polaris";
 import { useEffect, useState, useCallback } from "react";
 
+import { authenticate } from "../shopify.server";
+import prisma from "../db.server";
+import openai from "../openai";
+
+import StepElement from "../steps/StepElement";
 import useFormStore from "../store";
 import setupObject from "../setup/setup.json";
+
+export const action = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
+  const json = await request.json();
+  const formData = json.formData;
+
+  return json({"done": "done"})
+}
 
 function MainForm() {
   const [totalSteps, setTotalSteps] = useState(1);
@@ -27,17 +39,19 @@ function MainForm() {
     };
   }, [currentStep, totalSteps, initialFormDataStore]);
 
-  const progress = (currentStep / totalSteps) * 100;
+  const progress = ((currentStep-1) / totalSteps) * 100;
 
   return (
     <Page>
       <Layout>
         <Layout.Section>
           <Card>
-            <BlockStack gap="200">
-              <StepElement stepElementData={getStepElementData()} />
-              <ProgressBar progress={progress} size="small" />
-            </BlockStack>
+            <div className="sm:h-[80vh] min-[480px]:h-[90vh] h-screen flex flex-col">
+              <div className="flex-grow flex w-full items-center justify-center">
+                <StepElement stepElementData={getStepElementData()} />
+              </div>
+              <ProgressBar progress={progress} size="medium" />
+            </div>
           </Card>
         </Layout.Section>
       </Layout>
