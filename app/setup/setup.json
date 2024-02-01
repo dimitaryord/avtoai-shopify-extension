@@ -1,114 +1,79 @@
 {
     "ProductInformation": {
-        "title" : "Product Information",
-        "description" : "Knowing more about your brand products and customer will help us create AVTO much better than it's default version. Try to view from this point, as you are trying to explain to a friend what are you are selling, why are people buying it, what separates you from others, who are you selling too. You don't have to think of any question just go trough the form and answer the questions the way you want. If you don't have idea what to answer just book a call from this link and within 30 mins someone from our team will help you out. Thank you again for installing our product, here is the email of our founders if you have any questions feel free to contact them.",
-        "components" : [
+        "title": "Product Information",
+        "description": "Knowing more about your brand products and customer will help us create AVTO much better than it's default version. Try to view from this point, as you are trying to explain to a friend what are you are selling, why are people buying it, what separates you from others, who are you selling too. ",
+        "components": [
             {
-                "type" : "input",
-                "id" : "storeName",
-                "label" : "What is the name of your Shopify Store?",
-                "options" : ["Default"],
-                "rules" : "required",
-                "errorName" : "Store Name"
+                "type": "input",
+                "id": "storeName",
+                "label": "What is the name of your Shopify Store?",
+                "options": [
+                    "Default"
+                ],
+                "rules": "required",
+                "errorName": "Store Name"
             },
             {
-                "type" : "input",
+                "type": "input",
                 "id": "brandInfo",
-                "label" : "Brand Information",
-                "placeholder" : "Describe your brand here",
-                "multiline" : 4,
-                "rules" : "required",
-                "errorName" : "Brand Information"
-            },
-            {
-                "type" : "input",
-                "id": "accountEmail",
-                "label" : "Account email",
-                "inputType" : "email",
-                "rules": {
-                    "check": "email",
-                    "min" : 1
-                },
-                "errorName" : "Account Email"
+                "label": "Brand Information",
+                "placeholder": "Describe your brand here",
+                "multiline": 4,
+                "rules": "required",
+                "errorName": "Brand Information"
             }
-            
-
         ]
     },
-    "Brand Identity": {
-        "title" : "Brand Identity",
-        "description" : "We would like to know a little bit more :)",
-        "components" : [
+    "Brand Category": {
+        "title": "Brand Category",
+        "description": "What is your industry?",
+        "components": [
             {
-                "type" : "input",
-                "id": "robotName",
-                "label" : "What would you like your bot to be called?",
-                "placeholder" : "My bot name should be...",
-                "rules" : "required",
-                "errorName" : "Robot Name"
-            },
-            {
-                "type" : "choice",
-                "id" : "companyIndustry",
-                "title" : "In which industry is your Shopify store?",
-                "choices" : [
-                {"label": "Food & Beverage", "value": "food"},
-                {"label": "Home & Garden", "value": "home"},
-                {"label": "Health & Beauty", "value": "health"},
-                {"label": "Fashion & Accessories", "value": "fashion"},
-                {"label": "Sports & Recreation", "value": "sports"},
-                {"label": "Electronics", "value": "electronics"},
-                {"label": "Toys & Games", "value": "toys"},
-                {"label": "Cosmetics", "value": "cosmetics"},
-                {"label": "Health care", "value": "healthcare"},
-                {"label": "Apparel", "value": "apparel"},
-                {"label": "Other", "value": "other"}
-            ]
-                
-                
-               
+                "type": "choice",
+                "id": "companyIndustry",
+                "title": "In which industry is your Shopify store?",
+                "choices": [
+                    {
+                        "label": "Lifestyle & Wellness",
+                        "value": "lifestyle"
+                    },
+                    {
+                        "label": "Fashion & Personal Accessories",
+                        "value": "fashion"
+                    },
+                    {
+                        "label": "Home & Living",
+                        "value": "home"
+                    },
+                    {
+                        "label": "Fashion & Accessories",
+                        "value": "fashion"
+                    },
+                    {
+                        "label": "Sports & Recreation",
+                        "value": "sports"
+                    },
+                    {
+                        "label": "Toys & Games",
+                        "value": "toys"
+                    }
+                ]
             }
-            
-
         ]
     },
     "Other Information": {
-        "title" : "Other Information",
-        "description" : "Just if you want to tell us something more about your brand, you can do it here, if not just click next.",
-        "components" : [
+        "title": "Other Information",
+        "description": "Just if you want to tell us something more about your brand, you can do it here, if not just click next.",
+        "components": [
             {
-                "type" : "input",
+                "type": "input",
                 "id": "otherInfo",
-                "label" : "Something that we need to know about your brand?",
-                "placeholder" : "Something specific about my company is...",
-                "multiline" : 4, 
-                "rules" : "required",
-                "errorName" : "Other Information"
-            },
-            {
-                "type" : "choice",
-                "id": "typeOfAnswering",
-                "title" : "How would you like your bot to answer?",
-                "choices" : [{"label": "Friendly", "value": "friendly"},
-                {"label": "Professional", "value": "professional"},
-                {"label": "Funny", "value": "funny"},
-                {"label": "Sarcastic", "value": "sarcastic"},
-                {"label": "Other", "value": "other"}]
-                
-                
-
-            },
-            {
-                "type" : "input",
-                "id": "importantInfo",
-                "label" : "Something important that the bot needs to know about your brand?",
-                "placeholder" : "Something specific about my company is...",
-                "multiline" : 2
-                
+                "label": "Something you think we need to know?",
+                "placeholder": "Something specific about my company is...",
+                "multiline": 4,
+                "rules": "required",
+                "errorName": "Other Information"
             }
-            
-
         ]
     }
-
 }
