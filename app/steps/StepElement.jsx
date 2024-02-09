@@ -6,10 +6,8 @@ import {
   InlineStack,
 } from "@shopify/polaris";
 import { useState, useCallback } from "react";
+import { useFetcher } from "@remix-run/react";
 
-import axios from "axios";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   useZodForm,
   createFormElement,
@@ -18,9 +16,8 @@ import {
 } from "../setup/readSetup";
 import useFormStore from "../store";
 
-const queryClient = new QueryClient();
-
 function StepElement({ stepElementData }) {
+  const fetcher = useFetcher();
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState([]);
 
@@ -47,15 +44,21 @@ function StepElement({ stepElementData }) {
     else return setErrors(createZodIssues(validationResult));
 
     if (stepElementData.isLastStep) {
-     await axios.post("/app/setup", { formData: formData });
+      fetcher.submit({ formData }, { method: "POST", encType: "application/json" });
+      console.log("Loading");
     }      
   }, [
     formData,
     nextStep,
+    fetcher,
     setFormDataStorage,
     zodFormCheck,
     stepElementData.isLastStep,
   ]);
+
+  if(fetcher.data){
+    console.log(fetcher.data)
+  }
 
   const back = useCallback(() => {
     setFormDataStorage(formData);
@@ -78,23 +81,21 @@ function StepElement({ stepElementData }) {
           </header>
 
 
-          <QueryClientProvider client={queryClient}>
-            <BlockStack gap="200">
-              {stepElementData.components.map((component, index) =>
-                createFormElement(
-                  component,
-                  errors[component.id],
-                  index,
-                  formData,
-                  setFormData
-                )
-              )}
-            </BlockStack>
-          </QueryClientProvider>
+          <BlockStack gap="200">
+            {stepElementData.components.map((component, index) =>
+              createFormElement(
+                component,
+                errors[component.id],
+                index,
+                formData,
+                setFormData
+              )
+            )}
+          </BlockStack>
 
           <InlineStack gap="300">
             <Button onClick={back}>Previous Step</Button>
-            <Button variant="primary" submit>
+            <Button submit variant="primary">
               Next Step
             </Button>
           </InlineStack>

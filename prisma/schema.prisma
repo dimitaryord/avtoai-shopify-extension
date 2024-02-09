@@ -20,7 +20,11 @@ model Session {
 }
 
 model User {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  shop        String    @unique
-  assistantId String    @unique
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  shop                String @unique
+  assistantId         String @unique
+  formDataFileId      String @unique
+  formDataFileContent Json
+  productsFileId      String @unique
+  productsFileContent Json
 }

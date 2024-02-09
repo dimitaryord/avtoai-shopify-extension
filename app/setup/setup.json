@@ -30,7 +30,7 @@
         "components": [
             {
                 "type": "choice",
-                "id": "companyIndustry",
+                "id": "industry",
                 "title": "In which industry is your Shopify store?",
                 "choices": [
                     {
@@ -44,10 +44,6 @@
                     {
                         "label": "Home & Living",
                         "value": "home"
-                    },
-                    {
-                        "label": "Fashion & Accessories",
-                        "value": "fashion"
                     },
                     {
                         "label": "Sports & Recreation",

@@ -3,19 +3,52 @@ import { Card, Page, Layout, ProgressBar } from "@shopify/polaris";
 import { useEffect, useState, useCallback } from "react";
 
 import { authenticate } from "../shopify.server";
-import prisma from "../db.server";
-import openai from "../openai";
+import { createModelV1, updateModelV1File } from "../assistant/model.v1";
+import { fetchAllProducts } from "../queries";
+import db from "../db";
 
 import StepElement from "../steps/StepElement";
 import useFormStore from "../store";
 import setupObject from "../setup/setup.json";
 
 export const action = async ({ request }) => {
-  const { session } = await authenticate.admin(request);
-  const json = await request.json();
-  const formData = json.formData;
+  const { session, admin } = await authenticate.admin(request);
+  const body = await request.json();
+  const formData = body.formData;
 
-  return json({"done": "done"})
+  let user = await db.findUserByShop(session.shop);
+  if(user){
+    const formDataFileId = await updateModelV1File( user.assistantId, [ user.productsFileId ], {
+      id: user.formDataFileId,
+      name: "formData",
+      data: formData
+    });
+
+    user = await db.updateUser(user, {
+      formDataFileId: formDataFileId,
+      formDataFileContent: formData
+    });
+  }
+  else {
+    const products = await fetchAllProducts(admin);
+
+    const { assistantId, formDataFileId, productsFileId } = await createModelV1({
+      assistantName: session.shop,
+      formData: formData,
+      products: products
+    });
+
+    user = await db.createUser({
+      shop: session.shop,
+      assistantId: assistantId,
+      formDataFileId: formDataFileId,
+      productsFileId: productsFileId,
+      formDataFileContent: JSON.stringify(formData),
+      productsFileContent: JSON.stringify(products)
+    });
+  }
+
+  return json({ message: "Successfully created or updated user.", user: user.id });
 }
 
 function MainForm() {
@@ -40,7 +73,6 @@ function MainForm() {
   }, [currentStep, totalSteps, initialFormDataStore]);
 
   const progress = ((currentStep-1) / totalSteps) * 100;
-
   return (
     <Page>
       <Layout>

@@ -2,6 +2,8 @@ import Elements, { Element } from "./elements.js"
 import createSendButtonSVG from "./sendButton.js"
 import createQuestionMarkSVG from "./questionMark.js"
 
+import styled from "./lib2.js"
+
 class ChatHeader extends Element {
     constructor(container, chatbotTitle, iconImage){
         const header = document.createElement("div")
@@ -125,8 +127,21 @@ class ActionSection extends Element {
     }
 }
 
+class Message extends Element {
+    constructor(container, messageText) {
+        const messageContainer = styled.div({
+            id: "avtoai-assistant-message-container",
+            style: {
+                width: "80%",
+                
+            }
+        })
+    }
+}
+
 export default {
     ChatHeader,
     ChatSection, 
-    ActionSection
+    ActionSection,
+    Message
 }

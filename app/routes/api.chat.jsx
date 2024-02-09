@@ -1,26 +1,40 @@
-import { verifyAppProxyHmac } from 'shopify-application-proxy-verification';    
+import { verifyRequest, grabIP } from "../middleware/proxy";
+import { initOpenAI } from "../openai";
+import { json } from "@remix-run/node";
 
-const usersAssistant = new Map()
+const userThreads = {};
 
-export const action = async ( { request }) => {
-    if(verifyAppProxyHmac(request.query, process.env.SHOPIFY_API_SECRET || "")) {
-        return new Response(JSON.stringify({ message : "Query valid"}), {
-            status: 200,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
+export const action = async ({ request }) => {
+    const openai = initOpenAI();
+    const { assistantId, userMessage } = await verifyRequest(request);
+    const ip = grabIP();
+
+    const userByIP = userThreads[ip];
+
+    if(userByIP) {
+        await openai.beta.threads.create(userByIP.threadId, {
+            role: "user",
+            content: userMessage
+        });
+
+        await openai.beta.threads.runs.create(
+            userByIP.threadId,
+            { assistant_id: assistantId }
+        );
+
+        const messages = await openai.beta.threads.messages.list(
+            userByIP.threadId
+        );
+
+        return json({ messages: messages }, { status: 201 });
     }
-    return new Response(JSON.stringify({ message: "Invalid query"}), {
-        status: 400,
-        headers: {
-            "Content-Type": "application/json",
-        }
-    })
+
+
+
 }
 
 
-export const loader = ( { request }) => {
+export const loader = ({ request }) => {
     return new Response(JSON.stringify({ message: "Hello from Shopify App Proxy!" }), {
         status: 200,
         headers: {

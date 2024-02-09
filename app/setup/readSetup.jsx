@@ -65,9 +65,9 @@ export function createFormElement(
                 ? formData[component.id]
                 : component.choices[0].value
             }
-            onChange={(value) =>
-              setFormData({ ...formData, [component.id]: value })
-            }
+            onChange={(value) => {
+              setFormData({ ...formData, [component.id]: value[0] })
+            }}
           />
           <formElements.Error
             condition={errorMessage}
@@ -91,7 +91,7 @@ export function useFormDataInit(initialFormData, components, setFormData) {
           else if (component.type == "options")
             object[component.id] = component.options[0];
           else if (component.type == "choice")
-            object[component.id] = component.choices[0].value;
+            object[component.id] = component.choices[0].value[0];
 
           return object;
         }, {})
