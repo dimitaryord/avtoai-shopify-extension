@@ -1,7 +1,7 @@
 {
     "ProductInformation": {
         "title": "Product Information",
-        "description": "Knowing more about your brand products and customer will help us create AVTO much better than it's default version. Try to view from this point, as you are trying to explain to a friend what are you are selling, why are people buying it, what separates you from others, who are you selling too. ",
+        "description": "Knowing more about your brand products and customer will help us create AVTO much better than it's default version",
         "components": [
             {
                 "type": "input",
