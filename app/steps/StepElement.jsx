@@ -5,8 +5,11 @@ import {
   Button,
   InlineStack,
 } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useFetcher } from "@remix-run/react";
+import { useNavigate } from 'react-router-dom';
+import Loading from "../components/loading/loadingSetupForm";
+import LoadingScreen from "../components/loading/loadingSetupForm";
 
 import {
   useZodForm,
@@ -18,8 +21,10 @@ import useFormStore from "../store";
 
 function StepElement({ stepElementData }) {
   const fetcher = useFetcher();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const previousStep = useFormStore((state) => state.previousStep);
   const setFormDataStorage = useFormStore((state) => state.setFormData);
@@ -40,13 +45,17 @@ function StepElement({ stepElementData }) {
       setFormDataStorage(formData);
       setErrors({});
       nextStep();
-    } 
+    }
     else return setErrors(createZodIssues(validationResult));
+
 
     if (stepElementData.isLastStep) {
       fetcher.submit({ formData }, { method: "POST", encType: "application/json" });
-      console.log("Loading");
-    }      
+      setIsLoading(true);
+    } else {
+      nextStep();
+    }
+
   }, [
     formData,
     nextStep,
@@ -56,15 +65,24 @@ function StepElement({ stepElementData }) {
     stepElementData.isLastStep,
   ]);
 
-  if(fetcher.data){
-    console.log(fetcher.data)
+  if (fetcher.data) {
+    setTimeout(() => {
+      setIsLoading(false)
+      navigate("/app/menu");
+    }, 500)
   }
+
 
   const back = useCallback(() => {
     setFormDataStorage(formData);
     previousStep();
   }, [previousStep, formData, setFormDataStorage]);
 
+  if (isLoading) {
+    return <div className="App">
+      <LoadingScreen />
+    </div>;;
+  }
   return (
     <Form onSubmit={handleSubmit}>
       <FormLayout>
@@ -75,7 +93,7 @@ function StepElement({ stepElementData }) {
                 {stepElementData.title}
               </h1>
               <p className="font-medium mx-2 text-sm">
-                  {stepElementData.description}
+                {stepElementData.description}
               </p>
             </BlockStack>
           </header>
