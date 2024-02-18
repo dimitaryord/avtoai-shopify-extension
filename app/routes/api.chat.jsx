@@ -1,36 +1,56 @@
-import { verifyRequest, grabIP } from "../middleware/proxy";
+import { verifyAppProxyRequest } from "../middleware/proxy";
 import { initOpenAI } from "../openai";
 import { json } from "@remix-run/node";
 
-const userThreads = {};
+
+import adaptivePollingWithInitialDelay from "../assistant/utils/polling";
+import pullMessages from "../assistant/utils/pullMessages";
 
 export const action = async ({ request }) => {
+    const user = await verifyAppProxyRequest(request);
     const openai = initOpenAI();
-    const { assistantId, userMessage } = await verifyRequest(request);
-    const ip = grabIP();
 
-    const userByIP = userThreads[ip];
+    try{
+        const body = await request.json();
 
-    if(userByIP) {
-        await openai.beta.threads.create(userByIP.threadId, {
+        if(!body)
+            throw json({ message: "No body provided"}, { status: 401 });
+
+        const { threadId, userMessage } = body;
+
+        if(!threadId) 
+            throw json({ message: "No thread id provided"}, { status: 401 });
+
+        if(!userMessage)
+            throw json({ message: "No user message provided"}, { status: 401});
+
+        await openai.beta.threads.messages.create(threadId, {
             role: "user",
             content: userMessage
+        })
+
+        const run = await openai.beta.threads.runs.create(threadId, {
+            assistant_id: user.assistantId,
         });
 
-        await openai.beta.threads.runs.create(
-            userByIP.threadId,
-            { assistant_id: assistantId }
-        );
+        await adaptivePollingWithInitialDelay({
+            openai: openai,
+            threadId: threadId,
+            runId: run.id,
+            initialDelay: 3000,
+            subsequentDelay: 100
+        });
 
-        const messages = await openai.beta.threads.messages.list(
-            userByIP.threadId
-        );
+        const messages = await pullMessages({
+            openai: openai,
+            threadId: threadId,
+        });
 
-        return json({ messages: messages }, { status: 201 });
+        return json({ messages: messages });
     }
-
-
-
+    catch(error) {
+        throw new Error("Error chatting with the assistant: " + error.message);
+    }
 }
 
 

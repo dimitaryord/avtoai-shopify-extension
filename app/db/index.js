@@ -25,11 +25,11 @@ async function createUser(userData){
     }
 }
 
-async function updateUser(user, updateData){
+async function updateUser(userId, updateData){
     try{
         const updatedUser = await prisma.user.update({ 
             where: {
-                id: user.id
+                id: userId
             },
             data: updateData
         });
@@ -41,8 +41,23 @@ async function updateUser(user, updateData){
     }
 }
 
+async function createThread(userId, threadId) {
+    try{
+        await prisma.thread.create({
+            data: {
+                id: threadId,
+                userId: userId
+            }
+        })
+    }
+    catch(error){
+        throw new Error("Error creating thread: " + error.message);
+    }
+}
+
 export default {
     findUserByShop,
     createUser,
-    updateUser
+    updateUser,
+    createThread
 }

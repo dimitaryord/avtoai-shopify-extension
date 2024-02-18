@@ -25,8 +25,8 @@ export async function createModelV1({ assistantName, formData, products }) {
             name: assistantName,
             description: `This is a trained model for ${assistantName} shop.`,
             instructions: fileInstructions,
-            model: "gpt-4-turbo-preview",
-            tools: [{ type: "retrieval" }],
+            model: "gpt-4-1106-preview",
+            tools: [{ type: "retrieval"}],
             file_ids: [openaiFormDataFile.id, openaiProductsFile.id]
         })
 
@@ -48,7 +48,9 @@ export async function updateModelV1File(assistantId, staticFilesId, file) {
     try{
         const openai = initOpenAI();
 
-        await openai.files.delete(file.id);
+        await openai.beta.assistants.files.del(assistantId, file.id);
+        await openai.files.del(file.id);
+
         const createdFilePath = await createFile(file.name, "json", file.data);
         const openaiCreatedFile = await openai.files.create({
             file: fs.createReadStream(createdFilePath),
@@ -63,5 +65,4 @@ export async function updateModelV1File(assistantId, staticFilesId, file) {
     catch (error) {
         throw new Error("Error updating model v1 file: " + error.message);
     }
-
 }

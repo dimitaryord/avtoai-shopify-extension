@@ -1,0 +1,21 @@
+.avtoai-assistant-side-drawer-blur{
+    height: 100vh;
+    width: 0%;
+    backdrop-filter: blur(6px);
+    position: fixed;
+    top: 0px;
+    z-index: -10;
+}
+
+.avtoai-assistant-side-drawer{
+    height: 95vh;
+    width: 500px;
+    position: fixed;
+    top:50%;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--avtoai-assistant-colors-app-theme);
+    border: var(--avtoai-assistant-colors-widget-box-border) solid 1px;
+    box-shadow: var(--avtoai-assistant-colors-widget-box-shadow) 0px 0px 0.5rem 0px;
+}

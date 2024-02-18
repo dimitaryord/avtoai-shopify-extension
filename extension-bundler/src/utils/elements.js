@@ -1,3 +1,5 @@
+import styled from "./lib2"
+
 export class Element {
     constructor(container, element) {
         if(container)
@@ -28,10 +30,27 @@ class ThemeHeading extends Element {
 
 }
 
-class ButtonElement extends Element {
-    constructor(container, text, appTheme, colorTheme) {
-        const button = document.createElement("button")
+class ThemeButton extends Element {
+    constructor(container, text) {
+        const button = styled.button({
+            id: "avtoai-assistant-theme-button",
+            style: {
+                cursor: "pointer",
+                width: "fit-content",
+                fontSize: "1.5rem",
+                marginBottom: "1.25rem",
+                paddingBlock: "2rem",
+                paddingInline: "2.25rem",
+                borderRadius: "10px",
+                border: "none",
+                color: "var(--avtoai-assistant-colors-color-theme-text-color)",
+                backgroundColor: "var(--avtoai-assistant-colors-color-theme)",
+            },
+            text: text
+        })
+        super(container, button)
 
+        return button
     }
 }
 class ThemeCloseButton extends Element {
@@ -64,6 +83,7 @@ class ConditionalRendering{
 
 export default {
     TextP,
+    ThemeButton,
     ThemeCloseButton,
     ConditionalRendering
 }

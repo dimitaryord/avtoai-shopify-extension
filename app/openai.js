@@ -5,3 +5,4 @@ export function initOpenAI() {
         apiKey: process.env.OPENAI_API_KEY
     });
 }
+

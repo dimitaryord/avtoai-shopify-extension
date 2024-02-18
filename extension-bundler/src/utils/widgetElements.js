@@ -1,4 +1,5 @@
 import Elements, { Element } from "./elements.js"
+import "../styles/widget-button.css"
 
 class WidgetSection extends Element {
     constructor(container, position, iconImageUrl, shadow) {
@@ -70,6 +71,7 @@ class WidgetSection extends Element {
             oval.style.boxShadow = "14px 14px 20px var(--avtoai-assistant-colors-widget-box-shadow)"
         
         const widgetImage = document.createElement('img')
+        widgetImage.loading = "lazy"
         widgetImage.src = iconImageUrl
         widgetImage.alt = 'avtoai-assistant-widget-image'
         widgetImage.style.width = "45px"

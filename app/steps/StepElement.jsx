@@ -5,10 +5,9 @@ import {
   Button,
   InlineStack,
 } from "@shopify/polaris";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useFetcher } from "@remix-run/react";
 import { useNavigate } from 'react-router-dom';
-import Loading from "../components/loading/loadingSetupForm";
 import LoadingScreen from "../components/loading/loadingSetupForm";
 
 import {

@@ -1,4 +1,5 @@
 import { Element } from "./elements.js"
+import "../styles/drawer.css"
 
 class SideDrawer extends Element {
     constructor(container, side, widgetSection){

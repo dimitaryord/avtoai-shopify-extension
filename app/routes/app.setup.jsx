@@ -24,7 +24,7 @@ export const action = async ({ request }) => {
       data: formData
     });
 
-    user = await db.updateUser(user, {
+    user = await db.updateUser(user.id, {
       formDataFileId: formDataFileId,
       formDataFileContent: formData
     });
@@ -44,7 +44,7 @@ export const action = async ({ request }) => {
       formDataFileId: formDataFileId,
       productsFileId: productsFileId,
       formDataFileContent: JSON.stringify(formData),
-      productsFileContent: JSON.stringify(products)
+      productsFileContent: JSON.stringify(products),
     });
   }
 

@@ -1,27 +1,35 @@
-import { verifyAppProxyHmac } from 'shopify-application-proxy-verification';
 import db from "../db";
+import { createHmac } from 'crypto'
 import { json } from "@remix-run/node";
 
-export async function verifyRequest(request) {
-    if(!verifyAppProxyHmac(request.query, process.env.SHOPIFY_API_SECRET || "")) {
-        throw json({ message: "Authentication failed"}, { status: 401 });
-    }
+function verifyShopifySignature(queryParams, secret) {
+    const { signature, ...params } = Object.fromEntries(queryParams)
+  
+    const sortedParamsString = Object.keys(params).sort().map(key => {
+      return `${key}=${params[key]}`;
+    }).join('')
+  
+    const hash = createHmac('sha256', secret).update(sortedParamsString).digest('hex')
+  
+    return hash === signature
+}
 
-    const body = await request.json();
-    const user = await db.findUserByShop(body.shop);
+export async function verifyAppProxyRequest(request) {
+    const queryParams = new URL(request.url).searchParams
+    if(!verifyShopifySignature(queryParams, process.env.SHOPIFY_API_SECRET || ""))
+        throw json({ message: "Authentication failed"}, { status: 401 });
+
+    const shop = await request.headers.get("Shopify-Store-Domain");
+
+    if(!shop) throw json({ message: "No shop specified"}, { status: 401 });
+
+    const user = await db.findUserByShop(shop);
 
     if(!user){
         throw json({ message: "Authentication failed" }, { status: 401 });
     }
 
-    if(!body.userMessage){
-        throw json({ message: "No body message!" }, { status: 401 });
-    }
-
-    return {
-        assistantId: user.assistantId, 
-        userMessage: body.userMessage
-    };
+    return user;
 }
 
 export function grabIP(request) {

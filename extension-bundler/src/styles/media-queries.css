@@ -3,7 +3,7 @@
         width: 60%;
     }
     .avtoai-assistant-chat-title-container{
-        width: 70%;
+        width: 50%;
     }
 }
 
@@ -15,9 +15,9 @@
     
 }
 
-@media screen and (max-width: 280px) {
+@media screen and (max-width: 480px) {
     .avtoai-assistant-chat-title-container{
-        width: 80%;
+        width: 70%;
     }
 }
 
