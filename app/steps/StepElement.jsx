@@ -7,7 +7,7 @@ import {
 } from "@shopify/polaris";
 import { useState, useCallback } from "react";
 import { useFetcher } from "@remix-run/react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "@remix-run/react";
 import LoadingScreen from "../components/loading/loadingSetupForm";
 
 import {

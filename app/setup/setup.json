@@ -15,6 +15,16 @@
             },
             {
                 "type": "input",
+                "id": "assistantName",
+                "label": "How would you like to call your assistant?",
+                "options": [
+                    "Default"
+                ],
+                "rules": "required",
+                "errorName": "Store Name"
+            },
+            {
+                "type": "input",
                 "id": "brandInfo",
                 "label": "Brand Information",
                 "placeholder": "Describe your brand here",
