@@ -13,8 +13,12 @@ export default {
         css({ output: "style.css" }), 
         copy({
             targets: [{
-                    src: "src/liquid/*.liquid",
+                    src: "src/blocks/*.liquid",
                     dest: `../extensions/${process.env.EXTENSION || ""}/blocks`
+                },
+                {
+                    src: "src/snippets/*.liquid",
+                    dest: `../extensions/${process.env.EXTENSION || ""}/snippets`
                 },
                 {
                     src: ["public/*.png", "public/*.jpg"],

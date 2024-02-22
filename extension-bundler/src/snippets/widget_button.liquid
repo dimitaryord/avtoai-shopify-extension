@@ -1,0 +1,98 @@
+<div id="avtoai-assistant-widget-button" 
+    class="avtoai-assistant-widget-button avtoai-assistant-widget-button-position-{{ position }}">
+    {%if position == "right" %}
+        <div class="avtoai-assistant-widget-button-main">
+            {% if imageUrl != blank %}
+                <img loading="lazy" src="{{ imageUrl | image_url }}" 
+                alt="avtoai-assistant-widget-button-image"
+                width="50px"
+                height="50px" 
+                style="border-radius: 50%;" >
+            {% else %}
+                <img loading="lazy" src="{{ 'default_widget_icon.png'| asset_url }}" 
+                alt="avtoai-assistant-widget-button-image"
+                width="50px"
+                height="50px" 
+                style="border-radius: 50%;" >
+            {% endif %}
+        </div>
+        <div style="display:block;" 
+            class="avtoai-assistant-widget-button-triangle avtoai-assistant-widget-button-triangle-position-right"></div>
+    {% elsif position == "left" %}
+        <div style="display:block;" 
+            class="avtoai-assistant-widget-button-triangle avtoai-assistant-widget-button-triangle-position-left"></div>
+        <div class="avtoai-assistant-widget-button-main">
+            {% if imageUrl != blank %}
+                <img loading="lazy" src="{{ imageUrl | image_url }}" 
+                alt="avtoai-assistant-widget-button-image"
+                width="50px"
+                height="50px" 
+                style="border-radius: 50%;" >
+            {% else %}
+                <img loading="lazy" src="{{ 'default_widget_icon.png'| asset_url }}" 
+                alt="avtoai-assistant-widget-button-image"
+                width="50px"
+                height="50px" 
+                style="border-radius: 50%;" >
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.avtoai-assistant-widget-button{
+    position: fixed;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    bottom: 10px;
+    filter: drop-shadow(0.1rem 0.1rem 0.1rem var(--avtoai-assistant-colors-widget-button-shadow));
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform 0.2s;
+}
+
+.avtoai-assistant-widget-button:hover{
+    transform: scale(1.1);
+}
+
+.avtoai-assistant-widget-button:active{
+  transform: scale(0.9);
+}
+
+.avtoai-assistant-widget-button-position-right{
+    right: 5px;
+}
+
+.avtoai-assistant-widget-button-position-left{
+    left: 5px;
+}
+
+.avtoai-assistant-widget-button-main{
+  background-color: {{ mainColor }};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 60px;
+  border-radius: 10px;
+}
+
+.avtoai-assistant-widget-button-triangle{
+    width: 0; 
+    height: 0; 
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 15px solid {{ mainColor }};
+    position:relative;
+    top: 40px;
+}
+
+.avtoai-assistant-widget-button-triangle-position-right{
+  right: 15px;
+}
+
+.avtoai-assistant-widget-button-triangle-position-left{
+  left: 15px;
+}
+</style>

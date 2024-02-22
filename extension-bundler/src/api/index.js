@@ -26,9 +26,10 @@ class API {
                 const data = await res.json()
                 return data
             }
-            return { error: res }
+            return { error: await res.json() }
         }
         catch(error) {
+            console.log(error)
             console.error(error.message)
         }
     }
@@ -45,9 +46,10 @@ class API {
                 return data
             }
 
-            return { error: res }
+            return { error: await res.json() }
         }
         catch(error) {
+            console.log(error)
             console.error(error.message)
         }
     }

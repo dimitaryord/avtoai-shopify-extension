@@ -1,43 +1,46 @@
 import { configureGlobalCSSThemeVariables } from "./utils/config.js"
-import WidgetElements from "./utils/widgetElements.js"
-import DrawerElements from "./utils/drawerElements.js"
-import ChatApp from "./utils/chatApp.js"
+import { getWidgetButton, getContainer } from "./utils/static.js"
+
+import { Drawer } from "./utils/chat/drawer.js"
+import ChatApp from "./utils/chat/chatApp.js"
 
 import api from "./api/index.js"
 import { setItem, getItem } from "./store/session.js"
-import { mapMessages, MessageElement, LoadingMessageElement } from "./utils/messages.js"
+import { mapMessages, MessageElement, LoadingMessageElement } from "./utils/chat/messages.js"
 
 import "./styles/style.css"
 import "./styles/animations.css"
 import "./styles/media-queries.css"
 
 function setupExtension() {
-    const container = document.getElementById("avtoai-assistant-bot-container")
+    const container = getContainer()
+    const widgetButton = getWidgetButton()
     
     const shopDomain = container.getAttribute("data-shop-domain")
     api.setShop(shopDomain)
+    console.log(api)
 
     const colorTheme = container.getAttribute('data-avtoai-color-theme-app')
     const appTheme = container.getAttribute('data-avotai-theme-app')
-    const widgetButtonColor = container.getAttribute("data-avtoai-widget-button-color")
 
-    configureGlobalCSSThemeVariables(colorTheme, appTheme, widgetButtonColor)
+    configureGlobalCSSThemeVariables(colorTheme, appTheme)
 
     const chatPosition = container.getAttribute("data-avtoai-chat-position")
-    const widgetButtonShadow = container.getAttribute("data-avtoai-widget-button-shadow") == "yes"
-    const widgetButtonPosition = container.getAttribute("data-avtoai-widget-button-position")
-    const widgetIconUrl = container.getAttribute('data-avtoai-widget-icon-url')
+    const chatImageUrl = container.getAttribute('data-avtoai-chat-image')
 
     container.removeAttribute('data-shop-domain')
-    container.removeAttribute('data-avtoai-widget-icon-url')
+    container.removeAttribute('data-avtoai-chat-image')
 
-    const widgetSection = new WidgetElements.WidgetSection(container, widgetButtonPosition, widgetIconUrl, widgetButtonShadow)
+    const sideDrawer = new Drawer({
+        container: container,
+        position: chatPosition
+    })
 
-    const sideDrawer = new DrawerElements.SideDrawer(container, chatPosition, widgetSection)
+    const assistantName = getItem("avtoai-assistant-name")
     const app = new ChatApp({
         drawer: sideDrawer,
-        assistantName: "Avto AI chatbot Here to help you",
-        assistantImage: widgetIconUrl
+        assistantName: assistantName ? assistantName : "Avto AI chatbot Here to help you",
+        assistantImage: chatImageUrl
     })
 
     app.onMessageSent = async (messageValue) => {
@@ -59,8 +62,9 @@ function setupExtension() {
         })
     }
 
+    if(!widgetButton) return console.error("No widget button element found")
 
-    widgetSection.button.onclick = async () => {
+    widgetButton.onclick = async () => {
         if(!sideDrawer.isOpen){
             sideDrawer.open()
             app.switchToLoading()

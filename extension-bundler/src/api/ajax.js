@@ -4,7 +4,7 @@ export async function fetchProductAndVariantDetails({ productHandle, variantId }
         const product = await response.json()
 
         const variant = product.variants.find(v => v.id === parseInt(variantId))
-        if (!variant) return
+        console.log(variant)
 
         let image = variant.featured_image
         if (!image) {
@@ -16,6 +16,7 @@ export async function fetchProductAndVariantDetails({ productHandle, variantId }
 
         const variantDetails = {
             title: variant.name,
+            price: variant.price / 100,
             imageUrl: image ? image.startsWith("https:") ? image : `https:${image}` : null
         }
 

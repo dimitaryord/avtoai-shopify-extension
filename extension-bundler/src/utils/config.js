@@ -13,10 +13,9 @@ function isLightColor(hex) {
     return luminance > threshold
 }
 
-export function configureGlobalCSSThemeVariables(colorTheme, appTheme, widgetButtonTheme){
+export function configureGlobalCSSThemeVariables(colorTheme, appTheme){
     const appThemeColor = appTheme == "light" ? "#fefefe" : "#222831"
-    const boxShadowColor = appTheme == "light" ? "#000000aa" : "#ffffffab"
-    const boxBorderColor = appTheme == "light" ? "#000000aa" : "#ffffffab"
+    const buttonShadowColor = appTheme == "light" ? "#000000aa" : "#ffffffab"
     const textColor = appTheme == "light" ? "black" : "white" 
     const colorThemeTextColor = isLightColor(colorTheme) ? "black" : "white"
     const textShadowColor = appTheme == "light" ? "white" : "black"
@@ -26,11 +25,7 @@ export function configureGlobalCSSThemeVariables(colorTheme, appTheme, widgetBut
     document.documentElement.style
     .setProperty("--avtoai-assistant-colors-app-theme", appThemeColor)
     document.documentElement.style
-    .setProperty("--avtoai-assistant-colors-widget-button-theme", widgetButtonTheme)
-    document.documentElement.style
-    .setProperty("--avtoai-assistant-colors-widget-box-border", boxBorderColor)
-    document.documentElement.style
-    .setProperty("--avtoai-assistant-colors-widget-box-shadow", boxShadowColor)
+    .setProperty("--avtoai-assistant-colors-widget-button-shadow", buttonShadowColor)
     document.documentElement.style
     .setProperty("--avtoai-assistant-colors-text-color", textColor)
     document.documentElement.style

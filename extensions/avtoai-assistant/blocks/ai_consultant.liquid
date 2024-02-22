@@ -1,16 +1,21 @@
 <div id="avtoai-assistant-bot-container" class="avtoai-assistant-container"
   data-shop-domain="{{ shop.domain }}"
+  data-avotai-theme-app="{{ block.settings.theme }}"
   data-avtoai-color-theme-app="{{ block.settings.color_theme }}"
   data-avtoai-chat-position="{{ block.settings.chat_position }}"
-  data-avotai-theme-app="{{ block.settings.theme }}"
-  data-avtoai-widget-button-position="{{ block.settings.widget_button_position }}"
-  data-avtoai-widget-button-color="{{ block.settings.widget_button_color }}"
-  data-avtoai-widget-button-shadow="{{ block.settings.widget_button_shadow }}"
-  {% if block.settings.widget_image != blank %}
-    data-avtoai-widget-icon-url="{{ block.settings.widget_image | image_url }}"
-    {% else %}
-    data-avtoai-widget-icon-url="{{ 'default_widget_icon.png' | asset_url }}"
-  {% endif %}>
+  {% if block.settings.chat_image != blank %}
+    data-avtoai-chat-image="{{ block.settings.chat_image |  image_url }}"
+  {% else %}
+    data-avtoai-chat-image="{{ 'default_widget_icon.png'| asset_url }}"
+  {% endif %} >
+
+
+  {% render 'widget_button',  
+    position: block.settings.widget_button_position, 
+    mainColor: block.settings.widget_button_color,
+    imageUrl: block.settings.widget_image
+  %}
+
 </div>
 
 
@@ -42,7 +47,13 @@
         "default": "light"
       },
       {
-        "type": "radio",
+        "type": "color",
+        "id": "color_theme",
+        "label": "Color Theme",
+        "default": "#222831"
+      },
+      {
+        "type": "select",
         "id": "chat_position",
         "label": "Chat Position",
         "options": [
@@ -58,56 +69,31 @@
         "default": "right"
       },
       {
-        "type": "color",
-        "id": "color_theme",
-        "label": "Color Theme",
-        "default": "#222831"
-      },
-      {
         "type": "select",
         "id": "widget_button_position",
         "label": "Widget Button Position",
         "options": [
           {
-            "value": "bottom-right",
-            "label": "Bottom Right"
+            "value": "right",
+            "label": "Right"
           },
           {
-            "value": "bottom-left",
-            "label": "Bottom Left"
-          },
-          {
-            "value": "top-right",
-            "label": "Top Right"
-          },
-          {
-            "value": "top-left",
-            "label": "Top Left"
+            "value": "left",
+            "label": "Left"
           }
         ],
-        "default": "bottom-right"
+        "default": "right"
       },
       {
         "type": "color",
         "id": "widget_button_color",
         "label": "Widget Button Color",
-        "default": "#ffffff"
+        "default": "#000000"
       },
       {
-        "type": "radio",
-        "id": "widget_button_shadow",
-        "label": "Widget Button Shadow",
-        "options": [
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          }
-        ],
-        "default": "yes"
+        "type": "image_picker",
+        "id": "chat_image",
+        "label": "Chat Assistant Image"
       },
       {
         "type": "image_picker",

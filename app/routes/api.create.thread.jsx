@@ -5,7 +5,7 @@ import db from "../db";
 
 export const action = async ({ request }) => {
     const user = await verifyAppProxyRequest(request);
-    const assistantName = JSON.parse(user.formDataFileContent).assistantName;
+    const { assistantName } = JSON.parse(user.formDataFileContent);
     
     const openai = initOpenAI();
 

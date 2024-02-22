@@ -25,8 +25,8 @@ export async function createModelV1({ assistantName, formData, products }) {
             name: assistantName,
             description: `This is a trained model for ${assistantName} shop.`,
             instructions: fileInstructions,
-            model: "gpt-4-1106-preview",
-            tools: [{ type: "retrieval"}],
+            model: "gpt-4",
+            tools: [{ type: "code_interpreter" }],
             file_ids: [openaiFormDataFile.id, openaiProductsFile.id]
         })
 

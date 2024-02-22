@@ -1,9 +1,8 @@
-import Elements, { Element } from "./elements.js"
-import styled from "./lib2.js"
-import createLoadingSpinnerSVG from "../svg/loadingIconSVG.js"
+import Elements, { Element } from "../elements.js"
+import styled from "../lib2.js"
+import createLoadingSpinnerSVG from "../../svg/loadingIconSVG.js"
 
-import { fetchProductAndVariantDetails, addItemToCart } from "../api/ajax.js"
-
+import { fetchProductAndVariantDetails, addItemToCart } from "../../api/ajax.js"
 
 export class Message {
     constructor(messageText, role, innerContent) {
@@ -64,12 +63,15 @@ export class LoadingMessageElement extends Element {
 }
 
 export class MessageProductCard extends Element {
-    constructor(container, { title, variantId, imageUrl }) {
+    constructor(container, { title, price, variantId, imageUrl }) {
         const cardContainer = styled.div({
             id: "avtoai-assistant-chat-app-message-product-card",
         })
         const cardTitle = styled.h3({
             id: "avtoai-assistant-chat-app-message-product-card-title",
+            style:{
+                marginBlockEnd: "1rem",
+            },
             text: title
         })
 
@@ -78,26 +80,61 @@ export class MessageProductCard extends Element {
         cardImage.src = imageUrl
         cardImage.alt = "product-image"
 
-        const aspectRation = cardImage.naturalWidth / cardImage.naturalWidth
-        const imageHeight = aspectRation > 1 && aspectRation <= 1.5 ? 240 : aspectRation > 1.5 ? 180 : 300
         styled.designComponent(cardImage, {
+            id: "avtoai-assistant-chat-app-message-product-card-image",
             style: {
-                width: `${aspectRation * imageHeight}px`,
-                height: `${imageHeight}px`,
-                marginBottom: "2.25rem"
+                width: "300px",
+                marginTop: "2.25rem" 
             }
         })
 
-        cardContainer.appendChild(cardTitle)
-        cardContainer.appendChild(cardImage)
+        const cardPrice = styled.p({
+            id: "avtoai-assistant-chat-app-message-card-price",
+            style: {
+                marginBlockStart: "0px",
+                marginBottom: "2.25rem",
+            },
+            text: new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'BGN' }).format(price)
+        })
 
-        const cardButton = new Elements.ThemeButton(cardContainer, "Add to Card")
+        cardContainer.appendChild(cardImage)
+        cardContainer.appendChild(cardTitle)
+        cardContainer.appendChild(cardPrice)
+
+        super(container, cardContainer)
+
+        const cardButton = this.createAddToCartButton()
         cardButton.onclick = async () => {
             await addItemToCart(variantId, 1)
             window.open(window.Shopify.routes.root + "cart")
         }
+        cardContainer.appendChild(cardButton)
+    }
 
-        super(container, cardContainer)
+    createAddToCartButton() {
+        const button = styled.button({
+            id: "avtoai-assistant-chat-app-messages-add-to-cart-button",
+            style: {
+                display: "block",
+                cursor: "pointer",
+                width: "300px",
+                marginBottom: "1.25rem",
+                paddingInline: "1.25rem",
+                paddingBlock: "1rem",
+                textAlign: "center",
+                border: "1px solid black",
+                color: "var(--avtoai-assistant-colors-message-assistant-bg)",
+                backgroundColor: "black",
+                transform: "scale(1)",
+                transition: "transform 0.5s"
+            },
+            hover: {
+                transform: "scale(1.05)"
+            },
+            text: "Add to Cart"
+        })
+
+        return button
     }
 }
 
@@ -114,6 +151,14 @@ export function removeMessages(container, messages=null, staticAddedMessages=0){
 
     return true
 }
+
+function removeAnnotations(message, annotations) {
+    for(let annotation of annotations){
+        console.log(message, annotation)
+        message.textContent = message.textContent.replace(annotation.text, "")
+    }
+}
+
 function extractProduct(message) {
     const productHandleRegex = /product_handle:\s*([^\s]+)/i
     const variantIdRegex = /variant_id:\s*(gid:\/\/shopify\/ProductVariant\/\d+)/i
@@ -152,6 +197,9 @@ export async function mapMessages({container, messages, staticAddedMessages}){
         clone.children[0].textContent = message.messageText
 
         container.appendChild(clone)
+
+        removeAnnotations(clone.children[0], message.annotations)
+        console.log(message.annotations)
         
         if(message.role === "assistant"){
             const product = extractProduct(clone.children[0])

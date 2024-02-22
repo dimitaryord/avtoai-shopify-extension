@@ -6,19 +6,23 @@ export async function fetchAllProducts(admin) {
         products(first: $first, after: $after) {
             edges {
                 node {
-                    id
                     handle
                     title
                     productType
-                    descriptionHtml
+                    tags
+                    description
+                    onlineStoreUrl
                     variants(first: 50) {
                         edges {
                           node {
                             id
-                            title
-                            sku
+                            displayName
+                            price
+                            compareAtPrice 
                             weight
-                            availableForSale
+                            availableForSale 
+                            requiresShipping 
+                            taxable
                             selectedOptions {
                                 name
                                 value
@@ -48,27 +52,18 @@ export async function fetchAllProducts(admin) {
 
             const { data } = await res.json();
             const edges = data?.products?.edges;
-            const products = edges?.map(edge => edge.node);
-            const variantProducts = products?.reduce((vps, p, i) => {
-                p.variants.edges.forEach((vp, j) => {
-                    vps[i+j] = {
-                        id: p.id,
-                        product_handle: p.handle,   
-                        product_title: p.title,
-                        productType: p.productType,
-                        descriptionHtml: p.descriptionHtml,
-                        variant_id: vp.node.id,
-                        variant_title: vp.node.title,
-                        sku: vp.node.sku,
-                        weight: vp.node.weight,
-                        availableForSale: vp.node.availableForSale,
-                        selectedOptions: vp.node.selectedOptions
-                    };
-                });
+            const products = edges?.map(edge => edge.node)
 
-                return vps;
-            }, []);
-            allProducts = allProducts.concat(variantProducts);
+            products.forEach(product => product.variants = product.variants.edges?.map(e => e.node));
+            products.forEach(product => product.variants.forEach(variant => {
+                variant.selectedOptions.forEach(({ name, value }) => {
+                    variant["option_" + name.toLowerCase()] = value;
+                }); 
+                
+                delete variant.selectedOptions;
+            }));
+
+            allProducts = allProducts.concat(products);
 
             hasNextPage = data?.products?.pageInfo?.hasNextPage || false;
             if (hasNextPage)

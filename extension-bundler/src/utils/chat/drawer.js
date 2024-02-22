@@ -1,27 +1,27 @@
-import { Element } from "./elements.js"
-import "../styles/drawer.css"
+import { Element } from "../elements.js"
+import "../../styles/drawer.css"
 
-class SideDrawer extends Element {
-    constructor(container, side, widgetSection){
+export class Drawer extends Element {
+    constructor({ container, position }){
         const sideDrawerContainer = document.createElement("div")
         sideDrawerContainer.id = "avtoai-assistant-side-drawer-container"
 
         const sideDrawerBlur = document.createElement("div")
         sideDrawerBlur.classList.add("avtoai-assistant-side-drawer-blur")
         sideDrawerBlur.id = "avtoai-assistant-side-drawer-blur"
-        if(side == "right") sideDrawerBlur.style.right = "0px"
-        else if(side == "left") sideDrawerBlur.style.left = "0px"
+        if(position == "right") sideDrawerBlur.style.right = "0px"
+        else if(position == "left") sideDrawerBlur.style.left = "0px"
         sideDrawerBlur.style.display = "block"
 
         const sideDrawer = document.createElement("div")
         sideDrawer.classList.add("avtoai-assistant-side-drawer")
         sideDrawer.id = "avtoai-assistant-side-drawer"
 
-        if(side == "right"){
+        if(position == "right"){
             sideDrawer.style.right = "10px"
             sideDrawer.style.transform = "translate(110%, -50%)"
         } 
-        else if(side == "left"){
+        else if(position == "left"){
             sideDrawer.style.left = "10px"
             sideDrawer.style.transform = "translate(-110%, -50%)"
         }
@@ -30,8 +30,7 @@ class SideDrawer extends Element {
         sideDrawerContainer.appendChild(sideDrawer)
         super(container, sideDrawerContainer)
 
-        this.side = side
-        this.widgetSection = widgetSection
+        this.side = position
         this.isOpen = false
 
         this.sideDrawerBlur = sideDrawerBlur
@@ -47,15 +46,11 @@ class SideDrawer extends Element {
     close(){
         this.isOpen = false
         this.playAnimation("reverse")
-        if(this.widgetSection)
-            this.widgetSection.playAnimation("reverse")
     }
 
     open(){
         this.isOpen = true
         this.playAnimation()
-        if(this.widgetSection)
-            this.widgetSection.playAnimation()
     }
 
     playAnimation(direction="normal") {
@@ -63,14 +58,4 @@ class SideDrawer extends Element {
         this.playElementAnimation
             (this.content, `avtoai-assistant-slide-drawer-${this.side} 0.4s ease-out forwards`, direction)
     }
-}
-
-class TopDownDrawer extends Element {
-    constructor(container, productId, side, text, imageUrl, buttonText){
-
-    }
-}
-
-export default {
-    SideDrawer
 }

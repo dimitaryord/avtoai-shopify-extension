@@ -1,11 +1,11 @@
-import Elements, { Element } from "./elements.js"
-import createSendButtonSVG from "../svg/sendButtonSVG.js"
-import createQuestionMarkSVG from "../svg/questionMarkSVG.js"
-import createLoadingSpinnerSVG from "../svg/loadingIconSVG.js"
+import Elements, { Element } from "../elements.js"
+import createSendButtonSVG from "../../svg/sendButtonSVG.js"
+import createQuestionMarkSVG from "../../svg/questionMarkSVG.js"
+import createLoadingSpinnerSVG from "../../svg/loadingIconSVG.js"
 
-import styled from "./lib2.js"
+import styled from "../lib2.js"
 
-import "../styles/chat.css"
+import "../../styles/chat.css"
 
 export class ChatHeader extends Element {
     constructor({ container, assistantName, assistantImage, startInLoading }){
