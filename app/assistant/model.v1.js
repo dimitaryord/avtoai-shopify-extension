@@ -42,7 +42,7 @@ export async function createModelV1({ assistantName, assistantInfo, products }) 
     }
 }
 
-export async function updateModelV1File(assistantId, assistantInfo) {
+export async function updateModelV1(assistantId, assistantInfo) {
     try{
         const openai = initOpenAI();
 

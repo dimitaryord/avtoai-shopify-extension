@@ -73,7 +73,7 @@ function setupExtension() {
             const assistantName = getItem("avtoai-assistant-chat-name")
 
             if(!thread || !assistantName){
-                const res = await api.get("/create/thread")
+                const res = await api.post("/create/thread")
 
                 app.sections.headerSection.setTitle(res.assistantName)
 

@@ -57,7 +57,7 @@ export async function fetchAllProducts(admin) {
             products.forEach(product => product.variants = product.variants.edges?.map(e => e.node));
             products.forEach(product => product.variants.forEach(variant => {
                 variant.selectedOptions.forEach(({ name, value }) => {
-                    variant["option_" + name.toLowerCase()] = value;
+                    variant[name.toLowerCase()] = value;
                 }); 
                 
                 delete variant.selectedOptions;

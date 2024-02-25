@@ -49,7 +49,7 @@ function StepElement({ stepElementData }) {
 
 
     if (stepElementData.isLastStep) {
-      fetcher.submit({ formData: formDataStorage }, { method: "POST", encType: "application/json" });
+      fetcher.submit({ formData: {...formDataStorage, ...formData} }, { method: "POST", encType: "application/json" });
       setIsLoading(true);
     } else {
       nextStep();

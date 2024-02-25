@@ -5,7 +5,7 @@ import { Card, Page, Layout, ProgressBar } from "@shopify/polaris";
 import { useEffect, useState, useCallback } from "react";
 
 import { authenticate } from "../shopify.server";
-import { createModelV1, updateModelV1File } from "../assistant/model.v1";
+import { createModelV1, updateModelV1 } from "../assistant/model.v1";
 import { fetchAllProducts } from "../queries";
 import db from "../db";
 
@@ -22,7 +22,7 @@ export const action = async ({ request }) => {
   const { assistantName, assistantStarters, ...assistantInfo} = formData;
 
   if(user){
-    await updateModelV1File(user.assistantId, assistantInfo);
+    await updateModelV1(user.assistantId, formData);
     user = await db.updateUser(user.id, {
       assistantName: assistantName,
       assistantStarters: assistantStarters,
@@ -34,7 +34,7 @@ export const action = async ({ request }) => {
 
     const { assistantId, productsFileId } = await createModelV1({
       assistantName: session.shop,
-      assistantInfo: assistantInfo,
+      assistantInfo: formData,
       products: products
     });
 

@@ -3,7 +3,7 @@ import { initOpenAI } from "../openai";
 import { json } from "@remix-run/node";
 import db from "../db";
 
-export const loader = async ({ request }) => {
+export const action = async ({ request }) => {
     const user = await verifyAppProxyRequest(request);
     const { assistantName, assistantStarters } = JSON.parse(user.assistantInfo);
     
