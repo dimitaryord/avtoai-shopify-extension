@@ -1,54 +1,45 @@
 import React from "react";
-import { Page, Layout, Card, BlockStack, InlineStack } from "@shopify/polaris";
+import { Page, Layout, Card, BlockStack, InlineStack, EmptyState, Text } from "@shopify/polaris";
 import RedirectButton from "../components/navigation/redirect_button";
 
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import { authenticate } from "../shopify.server";
+import db from "../db";
+
+export const loader = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
+  const user = await db.findUserByShop(session.shop);
+
+  return json({ hasAssistant: user ? true : false});
+}
+
 function FirstStep() {
-  return (
-    <Page>
-      <Layout>
-        <Layout.Section>
-          <Card padding="0">
-            <div
-              gap="500"
-              className="w-full sm:h-[80vh] min-[480px]:h-[90vh] h-screen flex justify-center"
-              style={{
-                backgroundImage: "url(background.png)",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-              }}
-            >
-              <BlockStack className="relative lg:top-[10%] top-[5%]" gap="500">
-                <h1 class="lg:text-7xl text-4xl font-bold text-blue-400 text-center mx-auto">
-                  Cheers for installing Avto
-                </h1>
+  const { hasAssistant } = useLoaderData();
 
-                <h1 class="lg:text-3xl lg:text-left text-center text-xl drop-shadow-md text-white font-bold mx-2 mt-5">
-                  Dive in, explore, and watch your business grow
-                </h1>
-
-                <div class="w-full flex justify-center mt-36">
-                  <InlineStack gap="200">
-                    <button className="py-4 lg:px-6 px-2 bg-white hover:bg-blue-400
-                     shadow-md shadow-black hover:shadow-white lg:text-xl text-base border-1 border-black font-bold">
-                      Book a call
-                    </button>
-                    <RedirectButton
-                      text="Let's setup!"
-                      className="bg-black hover:bg-blue-400 hover:shadow-white
-                       shadow-md shadow-black  text-white hover:text-black font-bold py-4 lg:px-24 px-10 lg:text-2xl text-lg"
-                      baseUrl=""
-                      endpoint="/app/setup"
-                    />
-                  </InlineStack>
-                </div>
-              </BlockStack>
-            </div>
-          </Card>
-        </Layout.Section>
-      </Layout>
-    </Page>
+  if(!hasAssistant)
+    return (
+      <div className="w-full sm:h-[80vh] min-[480px]:h-[90vh] h-screen flex flex-col items-center justify-center">
+          <Text variant="headingXl" as="h1" >Thank you for installing AVTO</Text>
+          <EmptyState
+          heading="Welcome to the future of Ecom"
+          action={{content: 'Setup an assistant', url: "/app/setup"}}
+          secondaryAction={{
+            content: 'Contact us',
+            url: 'https://calendly.com/avtoai/demo',
+          }}
+          image="no-assistants.png">
+          <p>There are no currently available assistants. Create a new one</p>
+          </EmptyState>
+      </div>
   );
+  else
+    return (
+      <div className="w-full sm:h-[80vh] min-[480px]:h-[90vh] h-screen flex flex-col items-center justify-center">
+        Assistant Setup
+      </div>
+    );
 }
 
 export default FirstStep;

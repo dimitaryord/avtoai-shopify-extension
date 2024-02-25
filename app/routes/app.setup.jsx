@@ -1,4 +1,6 @@
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
 import { Card, Page, Layout, ProgressBar } from "@shopify/polaris";
 import { useEffect, useState, useCallback } from "react";
 
@@ -8,7 +10,7 @@ import { fetchAllProducts } from "../queries";
 import db from "../db";
 
 import StepElement from "../steps/StepElement";
-import useFormStore from "../store";
+import useFormStore from "../store/form";
 import setupObject from "../setup/setup.json";
 
 export const action = async ({ request }) => {
@@ -17,33 +19,32 @@ export const action = async ({ request }) => {
   const formData = body.formData;
 
   let user = await db.findUserByShop(session.shop);
-  if(user){
-    const formDataFileId = await updateModelV1File( user.assistantId, [ user.productsFileId ], {
-      id: user.formDataFileId,
-      name: "formData",
-      data: formData
-    });
+  const { assistantName, assistantStarters, ...assistantInfo} = formData;
 
+  if(user){
+    await updateModelV1File(user.assistantId, assistantInfo);
     user = await db.updateUser(user.id, {
-      formDataFileId: formDataFileId,
-      formDataFileContent: formData
+      assistantName: assistantName,
+      assistantStarters: assistantStarters,
+      assistantInfo: JSON.stringify(assistantInfo)
     });
   }
   else {
     const products = await fetchAllProducts(admin);
 
-    const { assistantId, formDataFileId, productsFileId } = await createModelV1({
+    const { assistantId, productsFileId } = await createModelV1({
       assistantName: session.shop,
-      formData: formData,
+      assistantInfo: assistantInfo,
       products: products
     });
 
     user = await db.createUser({
       shop: session.shop,
       assistantId: assistantId,
-      formDataFileId: formDataFileId,
+      assistantName: assistantName,
+      assistantStarters: assistantStarters,
+      assistantInfo: JSON.stringify(assistantInfo),
       productsFileId: productsFileId,
-      formDataFileContent: JSON.stringify(formData),
       productsFileContent: JSON.stringify(products),
     });
   }
@@ -51,7 +52,24 @@ export const action = async ({ request }) => {
   return json({ message: "Successfully created or updated user.", user: user.id });
 }
 
+export const loader = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
+  const user = await db.findUserByShop(session.shop);
+
+  if(user){
+    const assistantInfo = JSON.parse(user.assistantInfo)
+
+    return json({ 
+      formData: { ...assistantInfo, assistantName: user.assistantName, assistantStarters: user.assistantStarters}
+    });
+  }
+
+  return json({ formData: null });
+}
+
 function MainForm() {
+  const { formData: serverData } = useLoaderData();
+
   const [totalSteps, setTotalSteps] = useState(1);
   const [currentStep, setCurrentSteps] = useState(1);
 
@@ -67,24 +85,20 @@ function MainForm() {
   const getStepElementData = useCallback(() => {
     return {
       ...Object.values(setupObject)[currentStep - 1],
-      initialFormData: initialFormDataStore,
+      initialFormData: initialFormDataStore ? initialFormDataStore : serverData,
       isLastStep: currentStep == totalSteps,
     };
-  }, [currentStep, totalSteps, initialFormDataStore]);
+  }, [currentStep, totalSteps, initialFormDataStore, serverData]);
 
-  const progress = ((currentStep-1) / totalSteps) * 100;
   return (
     <Page>
       <Layout>
         <Layout.Section>
-          <Card>
             <div className="sm:h-[80vh] min-[480px]:h-[90vh] h-screen flex flex-col">
               <div className="flex-grow flex w-full items-center justify-center">
                 <StepElement stepElementData={getStepElementData()} />
               </div>
-              <ProgressBar progress={progress} size="medium" />
             </div>
-          </Card>
         </Layout.Section>
       </Layout>
     </Page>

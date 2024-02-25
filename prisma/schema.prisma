@@ -23,8 +23,9 @@ model User {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
   shop                String   @unique
   assistantId         String   @unique
-  formDataFileId      String   @unique
-  formDataFileContent Json
+  assistantName       String
+  assistantStarters   String[]
+  assistantInfo       Json
   productsFileId      String   @unique
   productsFileContent Json
   threads             Thread[]

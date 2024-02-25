@@ -1,21 +1,21 @@
 import fs from "fs";
 import { createFile, deleteFile, readFile } from "../utils/fileManagement";
+import { createVariables } from "../utils/regex";
 import { initOpenAI } from "../openai";
 
 const pathToFilesDir = (pathToFile) => `${process.env.MODEL_FILES_PATH}${pathToFile}`;
 
-export async function createModelV1({ assistantName, formData, products }) {
+export async function createModelV1({ assistantName, assistantInfo, products }) {
     try {
         const openai = initOpenAI();
 
         const fileInstructions = await readFile(pathToFilesDir("model.v1.txt"), "utf8");
-        const formDataFilePath = await createFile("formData", "json", formData);
-        const productsFilePath = await createFile("products", "json", products);
-
-        const openaiFormDataFile = await openai.files.create({
-            file: fs.createReadStream(formDataFilePath),
-            purpose: "assistants"
+        const instructions = createVariables({
+            content: fileInstructions,
+            variables: assistantInfo 
         });
+
+        const productsFilePath = await createFile("products", "json", products);
         const openaiProductsFile = await openai.files.create({
             file: fs.createReadStream(productsFilePath),
             purpose: "assistants"
@@ -24,18 +24,16 @@ export async function createModelV1({ assistantName, formData, products }) {
         const assistant = await openai.beta.assistants.create({
             name: assistantName,
             description: `This is a trained model for ${assistantName} shop.`,
-            instructions: fileInstructions,
+            instructions: instructions,
             model: "gpt-4",
             tools: [{ type: "code_interpreter" }],
-            file_ids: [openaiFormDataFile.id, openaiProductsFile.id]
+            file_ids: [openaiProductsFile.id]
         })
 
-        await deleteFile(formDataFilePath);
         await deleteFile(productsFilePath);
 
         return {
             assistantId: assistant.id,
-            formDataFileId: openaiFormDataFile.id,
             productsFileId: openaiProductsFile.id
         };
     }
@@ -44,23 +42,19 @@ export async function createModelV1({ assistantName, formData, products }) {
     }
 }
 
-export async function updateModelV1File(assistantId, staticFilesId, file) {
+export async function updateModelV1File(assistantId, assistantInfo) {
     try{
         const openai = initOpenAI();
 
-        await openai.beta.assistants.files.del(assistantId, file.id);
-        await openai.files.del(file.id);
-
-        const createdFilePath = await createFile(file.name, "json", file.data);
-        const openaiCreatedFile = await openai.files.create({
-            file: fs.createReadStream(createdFilePath),
-            purpose: "assistants"
+        const fileInstructions = await readFile(pathToFilesDir("model.v1.txt"), "utf8");
+        const instructions = createVariables({
+            content: fileInstructions,
+            variables: assistantInfo 
         });
+
         await openai.beta.assistants.update(assistantId, {
-            file_ids:[...staticFilesId, openaiCreatedFile.id]
+            instructions: instructions
         });
-
-        return openaiCreatedFile.id;
     }
     catch (error) {
         throw new Error("Error updating model v1 file: " + error.message);

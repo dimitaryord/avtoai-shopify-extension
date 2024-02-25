@@ -3,9 +3,9 @@ import { initOpenAI } from "../openai";
 import { json } from "@remix-run/node";
 import db from "../db";
 
-export const action = async ({ request }) => {
+export const loader = async ({ request }) => {
     const user = await verifyAppProxyRequest(request);
-    const { assistantName } = JSON.parse(user.formDataFileContent);
+    const { assistantName, assistantStarters } = JSON.parse(user.assistantInfo);
     
     const openai = initOpenAI();
 
@@ -13,5 +13,5 @@ export const action = async ({ request }) => {
 
     await db.createThread(user.id, thread.id);
 
-    return json({ threadId: thread.id, assistantName: assistantName }, { status: 201 });
+    return json({ threadId: thread.id, assistantName: assistantName, assistantStarters: assistantStarters }, { status: 201 });
 }

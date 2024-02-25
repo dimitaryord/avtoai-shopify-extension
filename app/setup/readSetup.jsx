@@ -58,6 +58,7 @@ export function createFormElement(
         <div key={`form-element-${index}`}>
           <formElements.Choice
             id={component.id}
+            key={`form-element-${index}`}
             title={component.title}
             choices={component.choices}
             selected={
@@ -76,6 +77,34 @@ export function createFormElement(
           />
         </div>
       );
+    case "stack":
+      return (
+        <div key={`form-element-${index}`}>
+          <formElements.Stack
+            id={component.id}
+            label={component.label}
+            placeholder={component.placeholder}
+            stack={formData[component.id] || [""]}
+            max={component.max}
+            valueFunc={index => formData[component.id][index] ? formData[component.id][index] : ""}
+            onChange={(value, index) => {
+              const newStack = formData[component.id];
+              newStack[index] = value;
+              setFormData({ ...formData, [component.id]: newStack })
+            }}
+            addFunc={() => {
+              const newStack = formData[component.id];
+              newStack.push("")
+              setFormData({ ...formData, [component.id]: newStack })
+            }}
+          />
+          <formElements.Error
+            condition={errorMessage}
+            message={errorMessage}
+            fieldID={component.id}
+          />
+        </div>
+      )
     default:
       return null;
   }
@@ -83,7 +112,12 @@ export function createFormElement(
 
 export function useFormDataInit(initialFormData, components, setFormData) {
   useEffect(() => {
-    if (initialFormData) setFormData(initialFormData);
+    const checkForInitialData = () => {
+      if(!initialFormData) return false;
+      return components.reduce(component => initialFormData.hasOwnProperty(component.id));
+    }
+
+    if (checkForInitialData()) setFormData(initialFormData);
     else {
       setFormData(
         components.reduce((object, component) => {
@@ -92,6 +126,8 @@ export function useFormDataInit(initialFormData, components, setFormData) {
             object[component.id] = component.options[0];
           else if (component.type == "choice")
             object[component.id] = component.choices[0].value[0];
+          else if(component.type == "stack")
+            object[component.id] = [""];
 
           return object;
         }, {})

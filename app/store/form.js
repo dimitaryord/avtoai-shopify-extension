@@ -19,6 +19,7 @@ const useFormStore = create(
         set({
           formData: { ...get().formData, ...formData },
         }),
+      refreshFormData: () => set({ formData: null, currentStep: 1 }),
     }),
     {
       name: "form-data-store",

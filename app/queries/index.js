@@ -71,7 +71,7 @@ export async function fetchAllProducts(admin) {
 
         }
 
-        return allProducts;
+        return { products: allProducts };
     } catch (error) {
         throw new Error(error.message);
     }

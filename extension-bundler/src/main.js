@@ -44,7 +44,7 @@ function setupExtension() {
     })
 
     app.onMessageSent = async (messageValue) => {
-        const thread = getItem("avtoai-assistant-thread")
+        const thread = getItem("avtoai-assistant-chat-thread")
         if(!thread) return
 
         new MessageElement(app.sections.chatSection, messageValue, "user")
@@ -69,16 +69,17 @@ function setupExtension() {
             sideDrawer.open()
             app.switchToLoading()
 
-            const thread = getItem("avtoai-assistant-thread")
-            const assistantName = getItem("avtoai-assistant-name")
+            const thread = getItem("avtoai-assistant-chat-thread")
+            const assistantName = getItem("avtoai-assistant-chat-name")
 
             if(!thread || !assistantName){
-                const res = await api.post("/create/thread")
+                const res = await api.get("/create/thread")
 
                 app.sections.headerSection.setTitle(res.assistantName)
 
-                setItem("avtoai-assistant-thread", res.threadId)
-                setItem("avtoai-assistant-name", res.assistantName)
+                setItem("avtoai-assistant-chat-thread", res.threadId)
+                setItem("avtoai-assistant-chat-name", res.assistantName)
+                setItem("avtoai-assistant-chat-starters", res.assistantStarters)
             }
             else{
                 const res = await api.post("/pull/messages", { threadId: thread })

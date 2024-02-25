@@ -4,7 +4,6 @@ export async function fetchProductAndVariantDetails({ productHandle, variantId }
         const product = await response.json()
 
         const variant = product.variants.find(v => v.id === parseInt(variantId))
-        console.log(variant)
 
         let image = variant.featured_image
         if (!image) {

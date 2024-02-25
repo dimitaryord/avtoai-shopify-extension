@@ -1,25 +1,35 @@
 {
     "ProductInformation": {
-        "title": "Product Information",
-        "description": "Knowing more about your brand products and customer will help us create AVTO much better than it's default version",
+        "title": "Assistant Information",
+        "description": "Give the user a wholesome experience with this assistant information.",
+        "components": [
+
+            {
+                "type": "input",
+                "id": "assistantName",
+                "label": "How would you like to call your assistant?",
+                "placeholder": "Assistant Name",
+                "rules": "required",
+                "errorName": "Assistant Name"
+            },
+            {
+                "type": "stack",
+                "id": "assistantStarters",
+                "label": "What starter questions would be suitable for the assistant?",
+                "placeholder": "Suggested question to ask the assistant",
+                "max": 4
+            }
+        ]
+    },
+    "Brand Information": {
+        "title": "Brand Information",
+        "description": "Present the user your store and brand here. Give details about why somebody should choose you",
         "components": [
             {
                 "type": "input",
                 "id": "storeName",
                 "label": "What is the name of your Shopify Store?",
-                "options": [
-                    "Default"
-                ],
-                "rules": "required",
-                "errorName": "Store Name"
-            },
-            {
-                "type": "input",
-                "id": "assistantName",
-                "label": "How would you like to call your assistant?",
-                "options": [
-                    "Default"
-                ],
+                "placeholder": "Store Name",
                 "rules": "required",
                 "errorName": "Store Name"
             },
@@ -34,51 +44,27 @@
             }
         ]
     },
-    "Brand Category": {
-        "title": "Brand Category",
-        "description": "What is your industry?",
-        "components": [
-            {
-                "type": "choice",
-                "id": "industry",
-                "title": "In which industry is your Shopify store?",
-                "choices": [
-                    {
-                        "label": "Lifestyle & Wellness",
-                        "value": "lifestyle"
-                    },
-                    {
-                        "label": "Fashion & Personal Accessories",
-                        "value": "fashion"
-                    },
-                    {
-                        "label": "Home & Living",
-                        "value": "home"
-                    },
-                    {
-                        "label": "Sports & Recreation",
-                        "value": "sports"
-                    },
-                    {
-                        "label": "Toys & Games",
-                        "value": "toys"
-                    }
-                ]
-            }
-        ]
-    },
-    "Other Information": {
-        "title": "Other Information",
-        "description": "Just if you want to tell us something more about your brand, you can do it here, if not just click next.",
+    "Store Policies": {
+        "title": "Store Policies",
+        "description": "Make the user able to get information about shipping, returns and etc.",
         "components": [
             {
                 "type": "input",
-                "id": "otherInfo",
-                "label": "Something you think we need to know?",
-                "placeholder": "Something specific about my company is...",
+                "id": "paymentReturnsInfo",
+                "placeholder": "What are the payment methods and return policy?",
+                "label": "Payment and Returns Information",
                 "multiline": 4,
                 "rules": "required",
-                "errorName": "Other Information"
+                "errorName": "Payment and Returns Information"
+            },
+            {
+                "type": "input",
+                "id": "shippingInfo",
+                "placeholder": "What about shipping?",
+                "label": " Shipping Information",
+                "multiline": 4,
+                "rules": "required",
+                "errorName": "Shipping Information"
             }
         ]
     }

@@ -139,22 +139,18 @@ export class MessageProductCard extends Element {
 }
 
 export function removeMessages(container, messages=null, staticAddedMessages=0){
-    if(messages && container.childElementCount === messages.length - 2 + staticAddedMessages){
-        for(let i = 0; i < staticAddedMessages; i++)
-            container.removeChild(container.lastChild)
-        return false
+    if(container.childElementCount === 0) {
+        return { initConversation: true }
     }
 
-    while (container.firstChild) {
-        container.removeChild(parent.firstChild)
-    }
+    for(let i = 0; i < staticAddedMessages; i++)
+        container.removeChild(container.lastChild)
 
-    return true
+    return { initConversation: false, newMessages: messages.length - container.childElementCount }
 }
 
 function removeAnnotations(message, annotations) {
     for(let annotation of annotations){
-        console.log(message, annotation)
         message.textContent = message.textContent.replace(annotation.text, "")
     }
 }
@@ -183,11 +179,11 @@ function extractProduct(message) {
 }
 
 export async function mapMessages({container, messages, staticAddedMessages}){
-    const initConversation = removeMessages(container, messages, staticAddedMessages)
+    const { initConversation, newMessages } = removeMessages(container, messages, staticAddedMessages)
     const [ userMessageCopy ] = new Message("", "user")
     const [ assistantMessageCopy ] = new Message("", "assistant")
 
-    const copyMessages = initConversation ? messages : messages.slice(messages.length - 2, messages.length)
+    const copyMessages = initConversation ? messages : messages.slice(messages.length - newMessages, messages.length)
 
     for(let i = 0; i < copyMessages.length; i++) {
         const message = copyMessages[i]
@@ -199,7 +195,6 @@ export async function mapMessages({container, messages, staticAddedMessages}){
         container.appendChild(clone)
 
         removeAnnotations(clone.children[0], message.annotations)
-        console.log(message.annotations)
         
         if(message.role === "assistant"){
             const product = extractProduct(clone.children[0])
