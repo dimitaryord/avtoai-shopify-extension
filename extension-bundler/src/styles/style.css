@@ -1,6 +1,6 @@
 :root{
+    --avtoai-assistant-colors-scrollbar: #afafaf;
     --avtoai-assistant-colors-message-assistant-bg: #f6f6f7;
-    --avtoai-assistant-colors-button-hover: #afafaf;
 }
 
 .avtoai-assistant-container{
@@ -59,4 +59,5 @@
 .avtoai-assistant-theme-close-button-cross:nth-child(2) {
     transform: rotate(-45deg);
 }
+
 

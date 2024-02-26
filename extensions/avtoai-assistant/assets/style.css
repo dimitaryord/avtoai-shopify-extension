@@ -99,6 +99,8 @@
     background-color: var(--avtoai-assistant-colors-color-theme);
     border: var(--avtoai-assistant-colors-widget-box-border) solid 1px;
     box-shadow: var(--avtoai-assistant-colors-widget-box-shadow) 0.1rem 0.1rem;
+    transform: scale(1);
+    transition: transform 0.2s;
 }
 
 .avtoai-assistant-actions-input-container{
@@ -131,6 +133,10 @@
     outline: 1px solid var(--avtoai-assistant-colors-text-color);
 }
 
+.avtoai-assistant-actions-starters-button-container:active{
+    transform: scale(0.9);
+}
+
 .avtoai-assistant-actions-input::placeholder{
     color: rgba(var(--avtoai-assistant-colors-color-theme-text-color), 0.6);
 }
@@ -149,9 +155,41 @@
 .avtoai-assistant-actions-send:hover{
     opacity: 1;
 }
+
+.avtoai-assistant-chat-actions-starter{
+    opacity: 0.8;
+    transform: scale(1);
+    transition: transform 0.2s;
+}
+
+.avtoai-assistant-chat-actions-starter:hover{
+    opacity: 1;
+    outline: 1px solid var(--avtoai-assistant-colors-text-color);
+}
+
+.avtoai-assistant-chat-actions-starter:active{
+    transform: scale(0.9);
+}
+
+.avtoai-assistant-chat-scrollbar::-webkit-scrollbar {
+    height: 5px;
+    width: 5px;
+    padding: 1px;
+}
+
+.avtoai-assistant-chat-scrollbar::-webkit-scrollbar-track {
+    background: var(--avtoai-assistant-colors-app-theme);
+    margin-inline: 0.5rem;
+    border-radius: 5px;
+}
+
+.avtoai-assistant-chat-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--avtoai-assistant-colors-scrollbar);
+    border-radius: 5px;
+}
 :root{
+    --avtoai-assistant-colors-scrollbar: #afafaf;
     --avtoai-assistant-colors-message-assistant-bg: #f6f6f7;
-    --avtoai-assistant-colors-button-hover: #afafaf;
 }
 
 .avtoai-assistant-container{
@@ -210,6 +248,7 @@
 .avtoai-assistant-theme-close-button-cross:nth-child(2) {
     transform: rotate(-45deg);
 }
+
 
 
 @keyframes avtoai-assistant-widget-button-click-animation-right {

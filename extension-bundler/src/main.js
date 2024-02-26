@@ -6,7 +6,8 @@ import ChatApp from "./utils/chat/chatApp.js"
 
 import api from "./api/index.js"
 import { setItem, getItem } from "./store/session.js"
-import { mapMessages, MessageElement, LoadingMessageElement } from "./utils/chat/messages.js"
+import { mapMessages } from "./utils/chat/messages.js"
+import { MessageElement, LoadingMessageElement } from "./utils/chat/messageElements.js"
 
 import "./styles/style.css"
 import "./styles/animations.css"
@@ -18,7 +19,6 @@ function setupExtension() {
     
     const shopDomain = container.getAttribute("data-shop-domain")
     api.setShop(shopDomain)
-    console.log(api)
 
     const colorTheme = container.getAttribute('data-avtoai-color-theme-app')
     const appTheme = container.getAttribute('data-avotai-theme-app')
@@ -36,10 +36,13 @@ function setupExtension() {
         position: chatPosition
     })
 
-    const assistantName = getItem("avtoai-assistant-name")
+    const assistantName = getItem("avtoai-assistant-chat-name")
+    const assistantStarters = getItem("avtoai-assistant-chat-starters")
+    
     const app = new ChatApp({
         drawer: sideDrawer,
         assistantName: assistantName ? assistantName : "Avto AI chatbot Here to help you",
+        assistantStarters: assistantStarters ? assistantStarters : ["What does this shop sell?"],
         assistantImage: chatImageUrl
     })
 

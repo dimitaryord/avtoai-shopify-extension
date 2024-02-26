@@ -18,12 +18,16 @@ JSON FILE STRUCTURE:
       variants:[
         id
         displayName
-        price
+        price: convert to float for price checking
         compareAtPrice
         weight
         availableForSale
         requiresShipping
         taxable
+        color?
+        size?
+        .....
+        (more fields as criteria if the field doesn't exist tell the user that there isn't such a criteria available)
       ]
     }
   ]
