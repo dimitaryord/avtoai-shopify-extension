@@ -9,6 +9,7 @@ JSON FILE STRUCTURE:
 {
   products:[
     {
+      id
       handle
       title
       productType

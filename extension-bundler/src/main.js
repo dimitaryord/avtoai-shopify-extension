@@ -16,9 +16,6 @@ import "./styles/media-queries.css"
 function setupExtension() {
     const container = getContainer()
     const widgetButton = getWidgetButton()
-    
-    const shopDomain = container.getAttribute("data-shop-domain")
-    api.setShop(shopDomain)
 
     const colorTheme = container.getAttribute('data-avtoai-color-theme-app')
     const appTheme = container.getAttribute('data-avotai-theme-app')
@@ -52,6 +49,11 @@ function setupExtension() {
 
         new MessageElement(app.sections.chatSection, messageValue, "user")
         new LoadingMessageElement(app.sections.chatSection)
+
+        app.sections.chatSection.lastChild.scrollIntoView({
+            behavior: "smooth",
+            block: "end"
+        })
 
         const res = await api.post("/chat", {
             userMessage: messageValue,

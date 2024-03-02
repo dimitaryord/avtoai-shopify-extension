@@ -121,9 +121,8 @@
 }
 
 .avtoai-assistant-actions-send{
-    cursor: pointer;
-    opacity: 0.8;
     position: absolute;
+    opacity: 0.8;
     right: 2%;
     display: flex;
     align-items: center;
@@ -131,7 +130,11 @@
     height: 100%;
 }
 
-.avtoai-assistant-actions-send:hover{
+.avtoai-assistant-actions-send-enabled{
+    cursor: pointer;
+}
+
+.avtoai-assistant-actions-send-enabled:hover{
     opacity: 1;
 }
 

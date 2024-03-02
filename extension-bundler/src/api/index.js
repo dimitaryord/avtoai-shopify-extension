@@ -12,10 +12,6 @@ class API {
         }
     }
 
-    setShop(shopDomain) {
-        this.config.headers["Shopify-Store-Domain"] = shopDomain
-    }
-
     async get(url) {
         try{
             this.config.method = "GET"
@@ -26,7 +22,7 @@ class API {
                 const data = await res.json()
                 return data
             }
-            return { error: await res.json() }
+            console.error({ error: await res.json() });
         }
         catch(error) {
             console.log(error)
@@ -46,7 +42,7 @@ class API {
                 return data
             }
 
-            return { error: await res.json() }
+            console.error({ error: await res.json() });
         }
         catch(error) {
             console.log(error)

@@ -1,4 +1,5 @@
 import db from "../db";
+import cache from "../db/lru";
 import { createHmac } from 'crypto'
 import { json } from "@remix-run/node";
 
@@ -11,29 +12,26 @@ function verifyShopifySignature(queryParams, secret) {
   
     const hash = createHmac('sha256', secret).update(sortedParamsString).digest('hex')
   
-    return hash === signature
+    const shop = params.shop;
+    return {
+        isValid : hash === signature && shop,
+        shop: shop,
+    }
 }
 
-export async function verifyAppProxyRequest(request) {
+export async function verifyAppProxyRequest(request, ip) {
     const queryParams = new URL(request.url).searchParams
-    if(!verifyShopifySignature(queryParams, process.env.SHOPIFY_API_SECRET || ""))
-        throw json({ message: "Authentication failed"}, { status: 401 });
+    const { isValid, shop } = verifyShopifySignature(queryParams, process.env.SHOPIFY_API_SECRET || "");
+    if(!isValid)
+        throw json({ message: "Authentication failed query"}, { status: 401 });
 
-    const shop = await request.headers.get("Shopify-Store-Domain");
-
-    if(!shop) throw json({ message: "No shop specified"}, { status: 401 });
-
-    const user = await db.findUserByShop(shop);
-
+    let user = cache.get(ip);
     if(!user){
-        throw json({ message: "Authentication failed" }, { status: 401 });
+        user = await db.findUserByShop(shop);
     }
 
-    return user;
-}
+    if(!user)
+        throw json({ message: "Authentication failed no user" }, { status: 401 });
 
-export function grabIP(request) {
-    const ip = request.headers["cf-connecting-ip"] ?? request.socket.remoteAddress;
-    if (typeof ip !== "string") 
-        throw json({message : "Client disconnected or forged information."}, { status: 400 });
+    return user;
 }

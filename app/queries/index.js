@@ -6,6 +6,7 @@ export async function fetchAllProducts(admin) {
         products(first: $first, after: $after) {
             edges {
                 node {
+                    id
                     handle
                     title
                     productType

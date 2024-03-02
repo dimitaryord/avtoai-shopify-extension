@@ -1,10 +1,21 @@
 import { verifyAppProxyRequest } from "../middleware/proxy";
+import { rateLimiter } from "../middleware/rate.limiter";
+import { getIp } from "../middleware/ip";
+
 import { initOpenAI } from "../openai";
 import { json } from "@remix-run/node";
 import pullMessages from "../assistant/utils/pullMessages";
 
 export const action = async ({ request }) => {
-    await verifyAppProxyRequest(request);
+    const ip = getIp(request);
+
+    rateLimiter({
+        ip: ip,
+        maxRequests: 200,
+        time: 1 * 1000 * 60
+    });
+
+    await verifyAppProxyRequest(request, ip);
     const openai = initOpenAI();
 
     try{
