@@ -1,17 +1,20 @@
 export async function fetchByProductHandleAndVariantId({productHandle, variantId}) {
-  try {
+  console.log(productHandle, variantId)
     const response = await fetch(`/products/${productHandle}.js`)
+    if(!response.ok) return null
     const product = await response.json()
 
     const variant = variantId ? product.variants.find(v => v.id === parseInt(variantId)) : null
 
-    let image = variant ? variant.featured_image: null
+    let image = variant ? variant.featured_image ? variant.featured_image.src : null : null
     if (!image) {
       if (product.featured_image)
         image = product.featured_image
       else if (product.images.length > 0)
         image = product.images[0]
     }
+
+    console.log(variant, product, image)
 
     const variantDetails = {
       title: variant ? variant.name : product.title,
@@ -21,9 +24,6 @@ export async function fetchByProductHandleAndVariantId({productHandle, variantId
     }
 
     return variantDetails
-  } catch (error) {
-    console.error('Error fetching product details: ' + error)
-  }
 }
 
 export async function fetchProductAndVariantDetails(codeOutput) {
@@ -39,7 +39,7 @@ export async function fetchProductAndVariantDetails(codeOutput) {
         const variantId = typeof product === 'string' ? null : 
           product.variant_id ? product.variant_id.split("/").pop() : null
         const res = await fetchByProductHandleAndVariantId({productHandle, variantId})
-        details.push(res)
+        if(res) details.push(res)
       })
 
       return details
