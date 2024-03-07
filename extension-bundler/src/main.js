@@ -63,6 +63,7 @@ function setupExtension() {
         mapMessages({
             container: app.sections.chatSection, 
             messages: res.messages.reverse(),
+            code: res.code,
             staticAddedMessages: 2
         })
     }

@@ -39,25 +39,32 @@ export const action = async ({ request }) => {
             role: "user",
             content: userMessage
         })
+        console.log(user.assistantId)
 
         const run = await openai.beta.threads.runs.create(threadId, {
             assistant_id: user.assistantId,
         });
 
-        await adaptivePollingWithInitialDelay({
-            openai: openai,
-            threadId: threadId,
-            runId: run.id,
-            initialDelay: 3000,
-            subsequentDelay: 100
-        });
+        try{
+            const { lastRunId } = await adaptivePollingWithInitialDelay({
+                openai: openai,
+                threadId: threadId,
+                runId: run.id,
+                initialDelay: 3000,
+                subsequentDelay: 100
+            });
 
-        const messages = await pullMessages({
-            openai: openai,
-            threadId: threadId,
-        });
+            const { messages, code } = await pullMessages({
+                openai: openai,
+                threadId: threadId,
+                lastRunId: lastRunId,
+            });
 
-        return json({ messages: messages });
+            return json({ messages: messages, code: code });
+        }
+        catch(error){
+            throw json({ error: error.message }, { status: 400 });
+        }
     }
     catch(error) {
         throw new Error("Error chatting with the assistant: " + error.message);

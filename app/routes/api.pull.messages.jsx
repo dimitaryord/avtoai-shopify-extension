@@ -28,7 +28,7 @@ export const action = async ({ request }) => {
         if(!threadId) 
             throw json({ message: "No thread id provided"}, { status: 401 });
 
-        const messages = await pullMessages({
+        const { messages } = await pullMessages({
             openai: openai,
             threadId: threadId
         });

@@ -19,14 +19,22 @@ function verifyShopifySignature(queryParams, secret) {
     }
 }
 
-export async function verifyAppProxyRequest(request, ip) {
+export async function verifyAppProxyRequest(request, ip, fetchDirectlyFromDb=false) {
     const queryParams = new URL(request.url).searchParams
     const { isValid, shop } = verifyShopifySignature(queryParams, process.env.SHOPIFY_API_SECRET || "");
     if(!isValid)
         throw json({ message: "Authentication failed query"}, { status: 401 });
 
-    let user = cache.get(ip);
-    if(!user){
+    
+    let user;
+
+    if(!fetchDirectlyFromDb){
+        user = cache.get(ip);
+        if(!user){
+            user = await db.findUserByShop(shop);
+        }
+    }
+    else{
         user = await db.findUserByShop(shop);
     }
 

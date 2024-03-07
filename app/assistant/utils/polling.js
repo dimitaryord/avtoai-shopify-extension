@@ -1,7 +1,7 @@
 export default function adaptivePollingWithInitialDelay({openai, runId, threadId, initialDelay, subsequentDelay}) {
     return new Promise((resolve, reject) => {
       let isInitialCheck = true;
-      let run
+      let run;
   
       const poll = async () => {
         try {
@@ -9,7 +9,7 @@ export default function adaptivePollingWithInitialDelay({openai, runId, threadId
           const status = run.status;
           
           if (status === 'completed') {
-            resolve('Assistant finished');
+            resolve({ message: "Assistant finished", lastRunId: isInitialCheck ? runId : run.id });
           } else {
             setTimeout(poll, isInitialCheck ? initialDelay : subsequentDelay);
             isInitialCheck = false;

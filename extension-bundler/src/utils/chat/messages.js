@@ -1,5 +1,6 @@
-import { fetchProductAndVariantDetails } from "../../api/ajax.js"
+import { fetchProductAndVariantDetails, fetchByProductHandleAndVariantId } from "../../api/ajax.js"
 import { Message, MessageProductCard } from "./messageElements.js"
+import { convertMarkdownToHTML } from "./markdownSupport.js";
 
 
 export function removeMessages(container, messages=null, staticAddedMessages=0){
@@ -14,6 +15,7 @@ export function removeMessages(container, messages=null, staticAddedMessages=0){
 }
 
 function removeAnnotations(message, annotations) {
+    if(!annotations || annotations.length === 0) return
     for(let annotation of annotations){
         message.textContent = message.textContent.replace(annotation.text, "")
     }
@@ -42,7 +44,7 @@ function extractProduct(message) {
     }
 }
 
-export async function mapMessages({container, messages, staticAddedMessages}){
+export async function mapMessages({container, messages, code, staticAddedMessages}){
     const { initConversation, newMessages } = removeMessages(container, messages, staticAddedMessages)
     const [ userMessageCopy ] = new Message("", "user")
     const [ assistantMessageCopy ] = new Message("", "assistant")
@@ -58,12 +60,17 @@ export async function mapMessages({container, messages, staticAddedMessages}){
 
         container.appendChild(clone)
 
-        removeAnnotations(clone.children[0], message.annotations)
-        
         if(message.role === "assistant"){
+            removeAnnotations(clone.children[0], message.annotations)
+            convertMarkdownToHTML(clone.children[0])
             const product = extractProduct(clone.children[0])
-            if(product){
-                const productDetails = await fetchProductAndVariantDetails(product)
+
+            if(i === copyMessages.length - 1 && code){
+                const details = await fetchProductAndVariantDetails(code)
+                details.forEach(product => new MessageProductCard(clone, product))
+            }
+            else if(product){
+                const productDetails = await fetchByProductHandleAndVariantId(product)
                 new MessageProductCard(clone, {...productDetails, variantId: product.variantId })
             }
         }

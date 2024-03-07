@@ -1,7 +1,7 @@
 import { LRUCache } from "lru-cache";
 import { json } from "@remix-run/node";
 
-const BAN_TIME = 15 * 1000 * 60
+const BAN_TIME = 15 
 
 const limiter = new LRUCache({
     max: 1000,
@@ -24,7 +24,7 @@ export function rateLimiter({ maxRequests, ip, time }) {
     else {
         if(currentTime - session.last_called < time ){
             if(session.requests >= maxRequests){
-                throw json({ message: `Too many requests. Try again after ${BAN_TIME / 1000 / 60 } minutes.`}, 
+                throw json({ message: `Too many requests. Try again after ${BAN_TIME} minutes.`}, 
                 { status: 429 });
             }
             else {
