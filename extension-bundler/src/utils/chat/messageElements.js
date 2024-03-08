@@ -63,7 +63,9 @@ export class LoadingMessageElement extends Element {
 }
 
 export class MessageProductCard extends Element {
-    constructor(container, { title, price, variantId, imageUrl }) {
+    constructor(container, { title=null, price=null, variantId=null, imageUrl=null }) {
+        if(!title || !price || !imageUrl || !variantId) return
+
         const cardContainer = styled.div({
             id: "avtoai-assistant-chat-app-message-product-card",
         })

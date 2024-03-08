@@ -65,8 +65,10 @@ export async function mapMessages({container, messages, code, staticAddedMessage
             convertMarkdownToHTML(clone.children[0])
             const product = extractProduct(clone.children[0])
 
-            if(i === copyMessages.length - 1 && code){
+            if(code && i === copyMessages.length - 1){
+                console.log("last code")
                 const details = await fetchProductAndVariantDetails(code)
+                console.log("details: " + details)
                 details.forEach(product => {
                     console.log(product)
                     new MessageProductCard(clone, product)

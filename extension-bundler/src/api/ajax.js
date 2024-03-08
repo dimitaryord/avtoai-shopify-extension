@@ -1,7 +1,11 @@
-export async function fetchByProductHandleAndVariantId({productHandle, variantId}) {
-  console.log(productHandle, variantId)
+export async function fetchByProductHandleAndVariantId({ productHandle, variantId }) {
+  try {
+    console.log(productHandle, variantId)
     const response = await fetch(`/products/${productHandle}.js`)
-    if(!response.ok) return null
+    if (!response.ok) {
+      console.error(`Failed to fetch product: ${response.statusText}`)
+      return null
+    }
     const product = await response.json()
 
     const variant = variantId ? product.variants.find(v => v.id === parseInt(variantId)) : null
@@ -24,58 +28,67 @@ export async function fetchByProductHandleAndVariantId({productHandle, variantId
     }
 
     return variantDetails
+  }
+  catch (error) {
+    console.error(`Error fetching product details for handle "${productHandle}": ${error.message}`)
+    return null
+  }
 }
 
 export async function fetchProductAndVariantDetails(codeOutput) {
-    if (codeOutput.trim().length === 0) return
+  if (codeOutput.trim().length === 0) return
 
-    const data = JSON.parse(codeOutput)
+  const data = JSON.parse(codeOutput)
 
-    if (Array.isArray(data)) {
-      let details = []
+  if (Array.isArray(data)) {
+    console.log("Array")
 
-      data.forEach(async product => {
-        const productHandle = typeof product === 'string' ? product : product.handle
-        const variantId = typeof product === 'string' ? null : 
-          product.variant_id ? product.variant_id.split("/").pop() : null
-        const res = await fetchByProductHandleAndVariantId({productHandle, variantId})
-        if(res) details.push(res)
-      })
+    const promises = data.map(product => {
+      const productHandle = typeof product === 'string' ? 
+        product : product.handle ? product.handle : product.product_handle ? product.product_handle : null;
+      const variantId = typeof product === 'string' ? null :
+        product.variant_id ? product.variant_id.split("/").pop() : null
+      return fetchByProductHandleAndVariantId({ productHandle, variantId }).catch(() => null)
+    })
 
-      return details
-    }
-    else if(typeof data === 'object') {
-      const productHandle = data.handle
-      const variantId = data.variant_id ? data.variant_id.split("/").pop() : null
-      const res = await fetchByProductHandleAndVariantId({productHandle, variantId})
-      return [res]
-    }
+    const details = await Promise.all(promises)
+
+    return details.filter(detail => detail !== null)
+  }
+  else if (typeof data === 'object') {
+    console.log("Object")
+
+    const productHandle = data.handle
+    const variantId = data.variant_id ? data.variant_id.split("/").pop() : null
+    const res = await fetchByProductHandleAndVariantId({ productHandle, variantId })
+    return [res]
+  }
 }
 
 export async function addItemToCart(variantId, quantity) {
-    const data = {
-      items: [{
-        id: parseInt(variantId),
-        quantity: quantity
-      }]
-    }
-
-    try {
-      const response = await fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (response.ok) {
-        const cart = await response.json()
-        console.log('Item added to cart', cart)
-      } else {
-        console.error('Failed to add item to cart. Status code:', response.status)
-      }
-    } catch (error) {
-      console.error('Error adding item to cart:', error)
-    }
+  const data = {
+    items: [{
+      id: parseInt(variantId),
+      quantity: quantity
+    }]
   }
+
+  try {
+    const response = await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (response.ok) {
+      const cart = await response.json()
+      console.log('Item added to cart', cart)
+    } else {
+      console.error('Failed to add item to cart. Status code:', response.status)
+    }
+  } catch (error) {
+    console.error('Error adding item to cart:', error)
+  }
+}
