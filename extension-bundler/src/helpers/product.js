@@ -1,13 +1,24 @@
-export async function getProductFetchDetails(product, fetchByProductHandleAndVariantId) {
-    const productHandle = typeof product === 'string' ?
-        Array.isArray(product) ? product[0] : 
-        product : product.product ? product.product.handle ? 
-        product.product.handle :  product.product.product_handle ?  product.product.product_handle : null :
-        product.handle ? product.handle : product.product_handle ? product.product_handle : null;
-    const variantId = typeof product === 'string' ? null : Array.isArray(product) ? null :
-        product.product ? product.product.variant_id ? product.product.variant_id.split("/").pop() : 
-        product.product.variants ? product.product.variants[0].id.split("/").pop() : null
-        : product.variant_id ? product.variant_id.split("/").pop() :
-        product.variants ? product.variants[0].id.split("/").pop() : null
-    return fetchByProductHandleAndVariantId({ productHandle, variantId }).catch(() => null)
+export function getProductFetchDetails(codeOutput, fetchByProductHandleAndVariantId) {
+    const variantIdPattern = /"(variant_id|id)"\s*:\s*"(gid:\/\/shopify\/ProductVariant\/(\d+))"/g
+    const handlePattern = /"(product_handle|handle)"\s*:\s*"(.*?-.+?)"/g
+
+    const handles = []
+    const variantIds = []
+
+    let match
+
+    while((match = handlePattern.exec(codeOutput)) !== null){
+        handles.push(match[2])
+    }
+
+    while((match = variantIdPattern.exec(codeOutput)) !== null){
+        variantIds.push(parseInt(match[2]))
+    }
+
+    console.log(handles, variantIds)
+
+    const promises = handles.map(
+        handle => fetchByProductHandleAndVariantId({ productHandle: handle, variantIds }).catch(() => null)
+    )
+    return promises
 }

@@ -1,7 +1,6 @@
-import { checkForPython } from "../helpers/checkForPython"
 import { getProductFetchDetails } from "../helpers/product"
 
-export async function fetchByProductHandleAndVariantId({ productHandle, variantId }) {
+export async function fetchByProductHandleAndVariantId({ productHandle, variantIds }) {
   try {
     const response = await fetch(`/products/${productHandle}.js`)
     if (!response.ok) {
@@ -10,26 +9,36 @@ export async function fetchByProductHandleAndVariantId({ productHandle, variantI
     }
     const product = await response.json()
 
-    const variant = variantId ? product.variants.find(v => v.id === parseInt(variantId)) : null
+    const variants = variantIds ? variantIds.length > 0 ? product.variants.filter(v => variantIds.includes(v.id)) : null : null
 
-    let image = variant ? variant.featured_image ? variant.featured_image.src : null : null
-    if (!image) {
-      if (product.featured_image)
-        image = product.featured_image
-      else if (product.images.length > 0)
-        image = product.images[0]
-    }
+    if(!variants || variants.length === 0) 
+      return [{
+        title: product.title,
+        variantId: product.variants[0].id,
+        price: product.variants[0].price / 100,
+        imageUrl: product.featured_image ? product.featured_image : product.images.length > 0 ? product.images[0] : null
+      }]
 
-    console.log(variant, product, image)
+      let details = []
 
-    const variantDetails = {
-      title: variant ? variant.name : product.title,
-      variantId: variant ? variant.id : product.variants[0].id,
-      price: variant ? variant.price / 100 : product.variants[0].price / 100,
-      imageUrl: image ? image.startsWith("https:") ? image : `https:${image}` : null
-    }
+      variants.forEach(v => {
+        let image = v ? v.featured_image ? v.featured_image.src : null : null
+        if(!image){
+          if (product.featured_image)
+            image = product.featured_image
+          else if (product.images.length > 0)
+            image = product.images[0]
+        }
 
-    return variantDetails
+        details.push({
+          title: v ? v.name : product.title,
+          variantId: v ? v.id : product.variants[0].id,
+          price: v ? v.price / 100 : product.variants[0].price / 100,
+          imageUrl: image ? image.startsWith("https:") ? image : `https:${image}` : null
+        })
+      })
+
+      return details
   }
   catch (error) {
     console.error(`Error fetching product details for handle "${productHandle}": ${error.message}`)
@@ -38,29 +47,11 @@ export async function fetchByProductHandleAndVariantId({ productHandle, variantI
 }
 
 export async function fetchProductAndVariantDetails(codeOutput) {
-  if (codeOutput.trim().length === 0) return
+  if (codeOutput.trim().length === 0) return []
 
-  let data = JSON.parse(checkForPython(codeOutput))
-
-  if (Array.isArray(data)) {
-    let promises
-
-    if(data.length === 2 && Array.isArray(data[0]) && Array.isArray(data[1]))
-      data = data[0]
-
-    promises = data.map(product => getProductFetchDetails(product, fetchByProductHandleAndVariantId))
-
-    const details = await Promise.all(promises)
-
-    return details.filter(detail => detail !== null)
-  }
-  else if (typeof data === 'object') {
-
-    const productHandle = data.handle
-    const variantId = data.variant_id ? data.variant_id.split("/").pop() : null
-    const res = await fetchByProductHandleAndVariantId({ productHandle, variantId })
-    return [res]
-  }
+  const promises = getProductFetchDetails(codeOutput, fetchByProductHandleAndVariantId)
+  const data = await Promise.all(promises)
+  return data.filter(details => details !== null)
 }
 
 export async function addItemToCart(variantId, quantity) {

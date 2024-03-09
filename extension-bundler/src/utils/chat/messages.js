@@ -68,15 +68,21 @@ export async function mapMessages({container, messages, code, staticAddedMessage
             if(code && i === copyMessages.length - 1){
                 console.log("last code")
                 const details = await fetchProductAndVariantDetails(code)
-                console.log("details: " + details)
-                details.forEach(product => {
-                    console.log(product)
-                    new MessageProductCard(clone, product)
-                })
+                console.log(details)
+                if(details)
+                    details.forEach(product => {
+                        product.forEach(variant => {
+                            console.log("variant " + variant)
+                            new MessageProductCard(clone, variant)
+                        })
+                    })
             }
             else if(product){
-                const productDetails = await fetchByProductHandleAndVariantId(product)
-                new MessageProductCard(clone, {...productDetails, variantId: product.variantId })
+                const productDetails = await fetchByProductHandleAndVariantId({
+                    productHandle: product.productHandle,
+                    variantIds: [parseInt(product.variantId)]
+                })
+                new MessageProductCard(clone, {...productDetails[0], variantId: productDetails[0].variantId })
             }
         }
     }
