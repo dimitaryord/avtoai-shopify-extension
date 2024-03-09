@@ -1,6 +1,8 @@
+import { checkForPython } from "../helpers/checkForPython"
+import { getProductFetchDetails } from "../helpers/product"
+
 export async function fetchByProductHandleAndVariantId({ productHandle, variantId }) {
   try {
-    console.log(productHandle, variantId)
     const response = await fetch(`/products/${productHandle}.js`)
     if (!response.ok) {
       console.error(`Failed to fetch product: ${response.statusText}`)
@@ -38,25 +40,21 @@ export async function fetchByProductHandleAndVariantId({ productHandle, variantI
 export async function fetchProductAndVariantDetails(codeOutput) {
   if (codeOutput.trim().length === 0) return
 
-  const data = JSON.parse(codeOutput)
+  let data = JSON.parse(checkForPython(codeOutput))
 
   if (Array.isArray(data)) {
-    console.log("Array")
+    let promises
 
-    const promises = data.map(product => {
-      const productHandle = typeof product === 'string' ? 
-        product : product.handle ? product.handle : product.product_handle ? product.product_handle : null;
-      const variantId = typeof product === 'string' ? null :
-        product.variant_id ? product.variant_id.split("/").pop() : null
-      return fetchByProductHandleAndVariantId({ productHandle, variantId }).catch(() => null)
-    })
+    if(data.length === 2 && Array.isArray(data[0]) && Array.isArray(data[1]))
+      data = data[0]
+
+    promises = data.map(product => getProductFetchDetails(product))
 
     const details = await Promise.all(promises)
 
     return details.filter(detail => detail !== null)
   }
   else if (typeof data === 'object') {
-    console.log("Object")
 
     const productHandle = data.handle
     const variantId = data.variant_id ? data.variant_id.split("/").pop() : null

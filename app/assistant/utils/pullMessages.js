@@ -18,7 +18,7 @@ export default async function pullMessages({ openai, threadId, lastRunId }) {
         const interpreterSteps = runSteps.data.map(step => step.step_details);
         const codeInterpreterStep = interpreterSteps.filter(step => step.type === "tool_calls").pop();
         code = codeInterpreterStep?.tool_calls[0].code_interpreter.outputs?.pop()?.logs
-        .replaceAll('\n', '').replaceAll("'", '"').replaceAll('(', '').replaceAll(')', '');
+        .replaceAll('\n', '').replaceAll("'", '"');
     }
 
     return { messages: mappedMessages, code };
