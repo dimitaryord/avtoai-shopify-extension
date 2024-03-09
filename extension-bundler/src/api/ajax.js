@@ -48,7 +48,7 @@ export async function fetchProductAndVariantDetails(codeOutput) {
     if(data.length === 2 && Array.isArray(data[0]) && Array.isArray(data[1]))
       data = data[0]
 
-    promises = data.map(product => getProductFetchDetails(product))
+    promises = data.map(product => getProductFetchDetails(product, fetchByProductHandleAndVariantId))
 
     const details = await Promise.all(promises)
 
