@@ -6,23 +6,24 @@ class API {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Shopify-Store-Domain": ""
+                "ngrok-skip-browser-warning": "true"
             },
-            body: JSON.stringify({})
         }
     }
 
     async get(url) {
         try{
             this.config.method = "GET"
+            this.config.body = null
 
             const res = await fetch(`${this.staticUrl}${url}`, this.config)
 
             if(res.ok){
                 const data = await res.json()
+                console.log(data)
                 return data
             }
-            console.error({ error: await res.json() });
+            console.error({ error: res });
         }
         catch(error) {
             console.log(error)
@@ -43,13 +44,14 @@ class API {
                 return data
             }
 
-            console.error({ error: await res.json() });
+            console.error({ error: res });
         }
         catch(error) {
             console.log(error)
             console.error(error.message)
         }
     }
+
 }
 
 const api = new API()

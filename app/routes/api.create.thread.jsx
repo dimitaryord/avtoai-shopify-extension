@@ -28,8 +28,8 @@ export const action = async ({ request }) => {
         const openai = initOpenAI();
         const thread = await openai.beta.threads.create();
         await db.createThread(user.id, thread.id);
-        cache.set(ip, { threadId: thread.id, assistantId: assistantId,
-             assistantName: assistantName, assistantStarters: assistantStarters });
+            cache.set(ip, { threadId: thread.id, assistantId: assistantId,
+                assistantName: assistantName, assistantStarters: assistantStarters });
         return json({ threadId: thread.id,assistantName: assistantName, assistantStarters: assistantStarters },
              { status: 201 });
     }

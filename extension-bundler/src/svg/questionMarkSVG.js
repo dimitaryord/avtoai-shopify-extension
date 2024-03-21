@@ -1,8 +1,19 @@
-export default (fill) => `<svg loading="lazy" width="25px" height="25px" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--emojione-monotone" preserveAspectRatio="xMidYMid meet">
-<g fill-rule="evenodd">
-<path d="M30.249 2.065C18.612 2.789 12.531 9.379 12 21.296h11.739c.147-4.128 2.451-7.214 6.741-7.669c4.211-.447 8.206.556 9.416 3.435c1.307 3.11-1.627 6.724-3.022 8.241c-2.582 2.813-6.776 4.865-8.95 7.9c-2.131 2.974-2.51 6.887-2.674 11.676h10.346c.145-3.062.349-5.995 1.742-7.898c2.266-3.092 5.65-4.541 8.486-6.983c2.709-2.334 5.559-5.147 6.043-9.501C53.32 7.466 42.683 1.289 30.249 2.065" fill="${fill}">
-</path>
-<ellipse cx="30.515" cy="55.567" rx="6.532" ry="6.433" fill="${fill}">
-</ellipse>
+export default (fill) => `<?xml version="1.0" encoding="utf-8"?>
+
+<svg fill="${fill}" width="30px" height="30px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
+<g data-name="Layer 2">
+
+<g data-name="question-mark">
+
+<rect width="24" height="24" transform="rotate(180 12 12)" opacity="0"/>
+
+<path d="M17 9A5 5 0 0 0 7 9a1 1 0 0 0 2 0 3 3 0 1 1 3 3 1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-1.1A5 5 0 0 0 17 9z"/>
+
+<circle cx="12" cy="19" r="1"/>
+
 </g>
+
+</g>
+
 </svg>`

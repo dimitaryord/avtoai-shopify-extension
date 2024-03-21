@@ -9,36 +9,31 @@ export async function fetchByProductHandleAndVariantId({ productHandle, variantI
     }
     const product = await response.json()
 
-    const variants = variantIds ? variantIds.length > 0 ? product.variants.filter(v => variantIds.includes(v.id)) : null : null
+    const filteredVariants = variantIds ? variantIds.length > 0 ? product.variants.filter(v => variantIds.includes(v.id)) : null : null
 
-    if(!variants || variants.length === 0) 
-      return [{
-        title: product.title,
-        variantId: product.variants[0].id,
-        price: product.variants[0].price / 100,
-        imageUrl: product.featured_image ? product.featured_image : product.images.length > 0 ? product.images[0] : null
-      }]
+    let details = []
+    product.variants.forEach(v => {
+      let image = v ? v.featured_image ? v.featured_image.src : null : null
+      if(!image){
+        if (product.featured_image)
+          image = product.featured_image
+        else if (product.images.length > 0)
+          image = product.images[0]
+      }
 
-      let details = []
-
-      variants.forEach(v => {
-        let image = v ? v.featured_image ? v.featured_image.src : null : null
-        if(!image){
-          if (product.featured_image)
-            image = product.featured_image
-          else if (product.images.length > 0)
-            image = product.images[0]
-        }
-
-        details.push({
-          title: v ? v.name : product.title,
-          variantId: v ? v.id : product.variants[0].id,
-          price: v ? v.price / 100 : product.variants[0].price / 100,
-          imageUrl: image ? image.startsWith("https:") ? image : `https:${image}` : null
-        })
+      details.push({
+        displayName: v.name ? v.name : product.title,
+        id: v.id,
+        options: v.options,
+        price: v.price ? v.price / 100 : product.price / 100,
+        imageUrl: image ? image.startsWith("https:") ? image : `https:${image}` : null
       })
-
-      return details
+    })
+    return {
+      defaultVariantId: filteredVariants ? filteredVariants[0] ? filteredVariants[0].id : null : null,
+      variants: details,
+      options: product.options
+    }
   }
   catch (error) {
     console.error(`Error fetching product details for handle "${productHandle}": ${error.message}`)

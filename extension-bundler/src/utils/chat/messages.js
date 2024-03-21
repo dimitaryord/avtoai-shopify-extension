@@ -1,5 +1,5 @@
 import { fetchProductAndVariantDetails, fetchByProductHandleAndVariantId } from "../../api/ajax.js"
-import { Message, MessageProductCard } from "./messageElements.js"
+import { Message } from "./messageElements.js"
 import { convertMarkdownToHTML } from "./markdownSupport.js";
 
 
@@ -46,8 +46,8 @@ function extractProduct(message) {
 
 export async function mapMessages({container, messages, code, staticAddedMessages}){
     const { initConversation, newMessages } = removeMessages(container, messages, staticAddedMessages)
-    const [ userMessageCopy ] = new Message("", "user")
-    const [ assistantMessageCopy ] = new Message("", "assistant")
+    const userMessageCopy = new Message("", "user", null, {}).content
+    const assistantMessageCopy = new Message("", "assistant", null, {}).content
 
     const copyMessages = initConversation ? messages : messages.slice(messages.length - newMessages, messages.length)
 
@@ -63,27 +63,27 @@ export async function mapMessages({container, messages, code, staticAddedMessage
         if(message.role === "assistant"){
             removeAnnotations(clone.children[0], message.annotations)
             convertMarkdownToHTML(clone.children[0])
-            const product = extractProduct(clone.children[0])
+            extractProduct(clone.children[0])
 
-            if(code && i === copyMessages.length - 1){
-                console.log("last code")
-                const details = await fetchProductAndVariantDetails(code)
-                console.log(details)
-                if(details)
-                    details.forEach(product => {
-                        product.forEach(variant => {
-                            console.log("variant " + variant)
-                            new MessageProductCard(clone, variant)
-                        })
-                    })
-            }
-            else if(product){
-                const productDetails = await fetchByProductHandleAndVariantId({
-                    productHandle: product.productHandle,
-                    variantIds: [parseInt(product.variantId)]
-                })
-                new MessageProductCard(clone, {...productDetails[0], variantId: productDetails[0].variantId })
-            }
+            // if(code && i === copyMessages.length - 1){
+            //     console.log("last code")
+            //     const details = await fetchProductAndVariantDetails(code)
+            //     console.log(details)
+            //     if(details)
+            //         details.forEach(product => {
+            //             product.forEach(variant => {
+            //                 console.log("variant " + variant)
+            //                 new MessageProductCard(clone, variant)
+            //             })
+            //         })
+            // }
+            // else if(product){
+            //     const productDetails = await fetchByProductHandleAndVariantId({
+            //         productHandle: product.productHandle,
+            //         variantIds: [parseInt(product.variantId)]
+            //     })
+            //     new MessageProductCard(clone, {...productDetails[0], variantId: productDetails[0].variantId })
+            // }
         }
     }
 }

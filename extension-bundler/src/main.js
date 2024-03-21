@@ -5,15 +5,18 @@ import { Drawer } from "./utils/chat/drawer.js"
 import ChatApp from "./utils/chat/chatApp.js"
 
 import api from "./api/index.js"
+import { connectWebSocket } from "./api/ws.js"
+
 import { setItem, getItem } from "./store/session.js"
 import { mapMessages } from "./utils/chat/messages.js"
-import { MessageElement, LoadingMessageElement } from "./utils/chat/messageElements.js"
+import { fetchProductAndVariantDetails } from "./api/ajax.js"
+import { MessageElement, LoadingMessageElement, ProductInfoMessage } from "./utils/chat/messageElements.js"
 
 import "./styles/style.css"
 import "./styles/animations.css"
 import "./styles/media-queries.css"
 
-function setupExtension() {
+async function setupExtension() {
     const container = getContainer()
     const widgetButton = getWidgetButton()
 
@@ -35,70 +38,113 @@ function setupExtension() {
 
     const assistantName = getItem("avtoai-assistant-chat-name")
     const assistantStarters = getItem("avtoai-assistant-chat-starters")
-    
+
+    /** 
+    * @type {WebSocket}
+    */
+    let websocket
+    /** 
+    * @type {LoadingMessageElement}
+    */
+    let writer
+
     const app = new ChatApp({
         drawer: sideDrawer,
         assistantName: assistantName ? assistantName : "Avto AI chatbot Here to help you",
         assistantStarters: assistantStarters ? assistantStarters : ["What does this shop sell?"],
-        assistantImage: chatImageUrl
+        assistantImage: chatImageUrl,
+        disableForMessageSent: false,
     })
+
+
 
     app.onMessageSent = async (messageValue) => {
         const thread = getItem("avtoai-assistant-chat-thread")
-        if(!thread) return
+        if (!thread) return
 
-        new MessageElement(app.sections.chatSection, messageValue, "user")
-        new LoadingMessageElement(app.sections.chatSection)
+        new MessageElement(app.sections.chatSection.content, messageValue, "user")
+        writer = new LoadingMessageElement(app.sections.chatSection.content)
 
-        app.sections.chatSection.lastChild.scrollIntoView({
+        app.sections.chatSection.content.lastChild.scrollIntoView({
             behavior: "smooth",
             block: "end"
         })
 
-        const res = await api.post("/chat", {
-            userMessage: messageValue,
-            threadId: thread
-        })
-
-        mapMessages({
-            container: app.sections.chatSection, 
-            messages: res.messages.reverse(),
-            code: res.code,
-            staticAddedMessages: 2
-        })
+        if(websocket) websocket.send(messageValue)
+        else console.error("No websocket connection")
     }
 
-    if(!widgetButton) return console.error("No widget button element found")
+
+    if (!widgetButton) return console.error("No widget button element found")
 
     widgetButton.onclick = async () => {
-        if(!sideDrawer.isOpen){
+        if (!sideDrawer.isOpen) {
             sideDrawer.open()
             app.switchToLoading()
 
+            let accessUrl
             const thread = getItem("avtoai-assistant-chat-thread")
             const assistantName = getItem("avtoai-assistant-chat-name")
 
-            if(!thread || !assistantName){
-                const res = await api.post("/create/thread")
+            if (!thread || !assistantName) {
+                const res = await api.get("/create/thread")
 
                 app.sections.headerSection.setTitle(res.assistantName)
+
+                accessUrl = res.accessUrl
 
                 setItem("avtoai-assistant-chat-thread", res.threadId)
                 setItem("avtoai-assistant-chat-name", res.assistantName)
                 setItem("avtoai-assistant-chat-starters", res.assistantStarters)
             }
-            else{
-                const res = await api.post("/pull/messages", { threadId: thread })
-                if(res.messages)
+            else {
+                const res = await api.post("/pull/messages", { thread_id: thread })
+                accessUrl = res.accessUrl
+
+                if (res.messages && res.messages.length > 0) {
+                    app.sections.chatSection.startChat()
+
                     mapMessages({
-                        container: app.sections.chatSection, 
+                        container: app.sections.chatSection.content,
                         messages: res.messages.reverse(),
                     })
-            }
+                }
 
-            app.switchToReady()
-        } 
+            }
+            
+            if(accessUrl){
+                websocket = await connectWebSocket(accessUrl)
+                app.switchToReady()
+
+
+                websocket.onmessage = async (message) => {
+                    const messageData = JSON.parse(message.data)
+                    if (messageData.status === "running" && messageData.step === "message_creation") {
+                        if(writer) writer.updateMessage((currentText) => currentText + messageData.chunk)
+                    }
+                    else if(messageData.status === "created" && messageData.step === "message_creation"){
+                        if(!writer || !writer.isEmpty())
+                            writer = new LoadingMessageElement(app.sections.chatSection.content)
+                    }
+                    else if(messageData.status === "completed" && messageData.step === "no_step"){
+                        app.messageSentReady()
+                    }
+                    else if(messageData.status === "created" && messageData.step === "code_interpreter"){
+                        if(!writer || !writer.isEmpty())
+                            writer = new LoadingMessageElement(app.sections.chatSection.content)
+                    }
+                    else if(messageData.status === "done" && messageData.step === "code_interpreter"){
+                        console.log(messageData.code)
+                        const products = await fetchProductAndVariantDetails(messageData.code)
+                        products.forEach(product => new ProductInfoMessage(app.sections.chatSection.content, product))
+                    }
+                }
+            }
+            else console.error("No websocket access url")
+
+        }
         else sideDrawer.close()
+
     }
 }
 

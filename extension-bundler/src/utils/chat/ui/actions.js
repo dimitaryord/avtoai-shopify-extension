@@ -30,13 +30,18 @@ export default class ActionSection extends Element {
             id: "avtoai-assistant-actions-input",
             classes: ["avtoai-assistant-actions-input"]
         })
-        input.placeholder = "Chat here"
+        input.placeholder = "Chat here..."
         inputButtonContainer.appendChild(input)
 
+        const startConversationButton = styled.div({
+
+        })
+
         const sendButton = styled.div({
+            id: "avtoai-assistant-actions-send-button",
             classes: ["avtoai-assistant-actions-send", "avtoai-assistant-actions-send-enabled"]
         })
-        sendButton.innerHTML = createSendButtonSVG("var(--avtoai-assistant-colors-color-theme-text-color)")
+        sendButton.innerHTML = createSendButtonSVG("var(--avtoai-assistant-colors-text-color)")
         inputButtonContainer.appendChild(sendButton)
 
         actionContainer.appendChild(startersButtonContainer)
@@ -74,7 +79,7 @@ export default class ActionSection extends Element {
             id: "avtoai-assistant-chat-actions-starters-container",
             classes: ["avtoai-assistant-chat-scrollbar"],
             style: {
-                width: "80%",
+                width: "90%",
                 flexGrow: "1",
                 display: "flex",
                 overflowY: "hidden",
@@ -89,7 +94,7 @@ export default class ActionSection extends Element {
             startersContainer.scrollLeft += event.deltaY * 0.5
         })
 
-        for(let starter of starters) {
+        for(let starter of starters.filter(starter => starter.trim() !== "")) {
             const starterElement = styled.div({
                 id: "avtoai-assistant-chat-actions-starter",
                 classes: ["avtoai-assistant-chat-actions-starter"],
@@ -97,16 +102,16 @@ export default class ActionSection extends Element {
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
-                    height: "55px",
+                    height: "50px",
                     textWrap: "nowrap",
                     width: "fit-content",
                     padding: "1rem",
                     fontSize: "14px",
-                    borderRadius: "10px",
+                    borderRadius: "50px",
                     color: "var(--avtoai-assistant-colors-color-theme-text-color)",
                     backgroundColor: "var(--avtoai-assistant-colors-color-theme)",
                     border: "var(--avtoai-assistant-colors-widget-box-border) solid 1px",
-                    boxShadow: "var(--avtoai-assistant-colors-widget-box-shadow) 0.1rem 0.1rem",
+                    boxShadow: "var(--avtoai-assistant-colors-text-color) 0.1rem 0.1rem",
                 },
                 text: starter
             })

@@ -9,7 +9,8 @@ import styled from "../lib2.js"
 import "../../styles/chat.css"
 
 class ChatApp {
-    constructor({ drawer, assistantName, assistantStarters=[], assistantImage, startInLoading=true }) {
+    constructor({ drawer, assistantName, assistantStarters=[], assistantImage, startInLoading=true,
+         disableForMessageSent=true }) {
         const headerSection = new ChatHeader({
             container: drawer.content,
             assistantName: assistantName,
@@ -23,17 +24,18 @@ class ChatApp {
         loadingComponent = this.createLoadingComponent()
 
         if(startInLoading){
-            chatSection = new ChatSection(null)
+            chatSection = new ChatSection(assistantImage)
             actionSection = new ActionSection(null, assistantStarters)
             drawer.content.appendChild(loadingComponent)
         }
         else{
-            chatSection = new ChatSection(drawer.content)
+            chatSection = new ChatSection(assistantImage)
             actionSection = new ActionSection(drawer.content, assistantStarters)
         }
 
         this.container = drawer.content
         this.loading = startInLoading
+        this.disableForMessageSent = disableForMessageSent
 
         this.sections = {
             headerSection,
@@ -54,6 +56,20 @@ class ChatApp {
         })
     }
 
+    messageSentReady(){
+        this.runStatus = "completed"
+        this.sections.actionSection.sendButton.disabled = false
+        this.sections.actionSection.sendButton.classList.add("avtoai-assistant-actions-send-enabled")
+    }
+
+    messageSentStarted(){
+        this.runStatus = "in_process"
+        this.sections.actionSection.sendButton.disabled = true
+        this.sections.actionSection.sendButton.classList.remove("avtoai-assistant-actions-send-enabled")
+        this.sections.chatSection.startChat()
+    }
+
+
     switchToReady(){
         if(this.loading){
             this.sections.headerSection.switchToReady()
@@ -61,7 +77,7 @@ class ChatApp {
             if(this.container.contains(this.loadingComponent))
                 this.container.removeChild(this.loadingComponent)
 
-            this.container.appendChild(this.sections.chatSection)
+            this.container.appendChild(this.sections.chatSection.element)
             this.container.appendChild(this.sections.actionSection.content)
 
             this.loading = false
@@ -72,8 +88,8 @@ class ChatApp {
         if(!this.loading){
             this.sections.headerSection.switchToLoading()
 
-            if(this.container.contains(this.sections.chatSection))
-                this.container.removeChild(this.sections.chatSection)
+            if(this.container.contains(this.sections.chatSection.element))
+                this.container.removeChild(this.sections.chatSection.element)
 
             if(this.container.contains(this.sections.actionSection.content))
                 this.container.removeChild(this.sections.actionSection.content)
@@ -110,21 +126,20 @@ class ChatApp {
         return loadingContainer
     }
 
+    async onMessageSent(messageValue){}
+
     async onSend(event, actionSection, staticMessageValue) {
         if(event) event.preventDefault()
 
         const messageValue = staticMessageValue ? staticMessageValue : actionSection.input.value.trim()
         if(messageValue.length > 0 && this.onMessageSent && this.runStatus === "completed"){
-            this.runStatus = "in_process"
-            this.sections.actionSection.sendButton.disabled = true
-            this.sections.actionSection.sendButton.classList.remove("avtoai-assistant-actions-send-enabled")
+            this.messageSentStarted()
 
             actionSection.input.value = ""
             await this.onMessageSent(messageValue)
 
-            this.runStatus = "completed"
-            this.sections.actionSection.sendButton.disabled = false
-            this.sections.actionSection.sendButton.classList.add("avtoai-assistant-actions-send-enabled")
+            if(this.disableForMessageSent)
+                this.messageSentReady()
         }
     }
 }

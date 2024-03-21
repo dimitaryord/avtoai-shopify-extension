@@ -1,14 +1,15 @@
-export default async function pullMessages({ openai, threadId, lastRunId }) {
+export default async function pullMessages({ openai, threadId, runId, lastRunId, checkCurrentStep=false }) {
     const messages = await openai.beta.threads.messages.list(threadId);
-    const mappedMessages = messages.body.data.map(message => { 
-        return {
-            role: message.role, 
-            messageText: message.content[0].text.value,
-            annotations: message.content[0].text.annotations   
-        };
-    });
+    const mappedMessages = messages.body.data
+    .filter(message => Array.isArray(message.content) && message.content.length > 0 && message.content[0]?.text?.value)
+    .map(message => ({
+        role: message.role,
+        messageText: message.content[0].text.value,
+        annotations: message.content[0].text.annotations
+    }));
 
     let code;
+    let currentStep;
 
     if(lastRunId){
         const runSteps = await openai.beta.threads.runs.steps.list(
@@ -21,5 +22,14 @@ export default async function pullMessages({ openai, threadId, lastRunId }) {
         .replaceAll('\n', '').replaceAll("'", '"');
     }
 
-    return { messages: mappedMessages, code };
+    if(checkCurrentStep) {
+        // const runSteps = await openai.beta.threads.runs.steps.list(
+        //     threadId,
+        //     runId
+        // );
+        // const steps = runSteps.data.map(step => step.step_details)
+        // currentStep = steps.length > 0 ? steps.pop().type : "message_creation";
+    }
+
+    return { messages: mappedMessages, code, currentStep: "message_creation" };
 }

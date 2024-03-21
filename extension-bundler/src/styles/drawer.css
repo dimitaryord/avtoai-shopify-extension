@@ -17,5 +17,5 @@
     flex-direction: column;
     background-color: var(--avtoai-assistant-colors-app-theme);
     border: var(--avtoai-assistant-colors-widget-box-border) solid 1px;
-    box-shadow: var(--avtoai-assistant-colors-widget-box-shadow) 0px 0px 0.5rem 0px;
+    box-shadow: var(--avtoai-assistant-colors-text-color) 0px 0px 0px 0.05rem;
 }
