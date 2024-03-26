@@ -10,19 +10,15 @@ export function getProductFetchDetails(codeOutput, fetchByProductHandleAndVarian
     let match
 
     while((match = handlePattern.exec(code)) !== null){
-        console.log(match)
         handles.push(match[2])
     }
 
     while((match = variantIdPattern.exec(code)) !== null){
-        console.log(match)
         const id = match[1] ? parseInt(match[1], 10) : parseInt(match[2], 10)
         if (!isNaN(id)) {
             variantIds.push(id)
         }
     }
-
-    console.log(handles, variantIds)
 
     const promises = handles.map(
         handle => fetchByProductHandleAndVariantId({ productHandle: handle, variantIds }).catch(() => null)

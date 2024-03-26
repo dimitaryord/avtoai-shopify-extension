@@ -56,22 +56,33 @@ export default class ActionSection extends Element {
         this.sendButton = sendButton
         this.content = actionContainer
         this.starters = Array.from(starters.children)
+        this.startersContent = starters
 
         startersButtonContainer.onclick = () => {
             if(this.mode === "chat") {
                 actionContainer.removeChild(inputButtonContainer)
-                actionContainer.appendChild(starters)
+                actionContainer.appendChild(this.startersContent)
                 startersButtonContainer.innerHTML = chatIcon
                 this.mode = "starters"
             }
             else if (this.mode === "starters"){
-                actionContainer.removeChild(starters)
+                actionContainer.removeChild(this.startersContent)
                 actionContainer.appendChild(inputButtonContainer)
                 startersButtonContainer.innerHTML = startersIcon
                 this.mode = "chat"
             }
         }
 
+    }
+
+    setStarters(starters){
+        const newStarters = this.createStarters(starters)
+        if(this.content.contains(this.startersContent)){
+            this.content.insertBefore(newStarters, this.startersContent)
+            this.content.removeChild(this.startersContent)
+        }
+        this.starters = Array.from(newStarters.children)
+        this.startersContent = newStarters
     }
 
     createStarters(starters) {

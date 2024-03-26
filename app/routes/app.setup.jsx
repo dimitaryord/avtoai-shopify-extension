@@ -1,7 +1,7 @@
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { Card, Page, Layout, ProgressBar } from "@shopify/polaris";
+import { Page, Layout, } from "@shopify/polaris";
 import { useEffect, useState, useCallback } from "react";
 
 import { authenticate } from "../shopify.server";
@@ -30,11 +30,15 @@ export const action = async ({ request }) => {
     });
   }
   else {
-    const products = await fetchAllProducts(admin);
+    const {products, productTypes, options } = await fetchAllProducts(admin);
 
     const { assistantId, productsFileId } = await createModelV1({
       assistantName: session.shop,
-      assistantInfo: formData,
+      assistantInfo: {
+        ...formData,
+        productTypes: productTypes.join(','),
+        options: JSON.stringify(options)
+      },
       products: products
     });
 
@@ -45,7 +49,7 @@ export const action = async ({ request }) => {
       assistantStarters: assistantStarters,
       assistantInfo: JSON.stringify(assistantInfo),
       productsFileId: productsFileId,
-      productsFileContent: JSON.stringify(products),
+      productsFileContent: JSON.stringify({ products: products }),
     });
   }
 

@@ -90,6 +90,7 @@ async function setupExtension() {
                 const res = await api.get("/create/thread")
 
                 app.sections.headerSection.setTitle(res.assistantName)
+                app.sections.actionSection.setStarters(res.assistantStarters)
 
                 accessUrl = res.accessUrl
 
@@ -119,7 +120,6 @@ async function setupExtension() {
 
                 websocket.onmessage = async (message) => {
                     const messageData = JSON.parse(message.data)
-                    console.log(messageData)
                     if (messageData.status === "running" && messageData.step === "message_creation") {
                         if(writer) writer.updateMessage((currentText) => currentText + messageData.chunk)
                     }
@@ -141,7 +141,7 @@ async function setupExtension() {
                     }
                 }
             }
-            else console.error("No websocket access url")
+            else console.error("No access url")
 
         }
         else sideDrawer.close()

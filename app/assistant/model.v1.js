@@ -15,7 +15,7 @@ export async function createModelV1({ assistantName, assistantInfo, products }) 
             variables: assistantInfo 
         });
 
-        const productsFilePath = await createFile("products", "json", products);
+        const productsFilePath = await createFile("products", "json", { products: products });
         const openaiProductsFile = await openai.files.create({
             file: fs.createReadStream(productsFilePath),
             purpose: "assistants"
@@ -49,7 +49,7 @@ export async function updateModelV1(assistantId, assistantInfo) {
         const fileInstructions = await readFile(pathToFilesDir("model.v1.txt"), "utf8");
         const instructions = createVariables({
             content: fileInstructions,
-            variables: assistantInfo 
+            variables: assistantInfo
         });
 
         await openai.beta.assistants.update(assistantId, {

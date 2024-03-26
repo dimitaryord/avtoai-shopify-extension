@@ -16,10 +16,10 @@ export async function fetchAllProducts(admin) {
                     tags
                     options {
                         name
-                        value
+                        values
                     }
                     description
-                    onlineStoreUrl
+                    onlineStorePreviewUrl
                     variants(first: 50) {
                         edges {
                           node {
@@ -63,20 +63,43 @@ export async function fetchAllProducts(admin) {
             const products = edges?.map(edge => edge.node)
 
             products.forEach(product => {
-                if(!productTypes.includes(product.productType)) productTypes.push(product.productType)
-                product.options.forEach(({name, value}) => {
-                    if(options.hasOwnProperty(name)){
-                        const currentOptions = options[name]
+                if (product.productType.trim() !== "") {
+
+                    if (!productTypes.includes(product.productType)) {
+                        productTypes.push(product.productType)
+
+                        product.options.forEach(({ name, values }) => {
+                            options[product.productType] = { [name]: [...values] }
+                        })
                     }
-                })
+                    else {
+                        product.options.forEach(({ name, values }) => {
+                            const productTypeOptions = options[product.productType]
+                            if (productTypeOptions.hasOwnProperty(name)) {
+                                const currentOptions = productTypeOptions[name]
+                                values.forEach(value => {
+                                    if (!currentOptions.includes(value)) {
+                                        currentOptions.push(value)
+                                        productTypeOptions[name] = currentOptions
+                                        options[product.productType] = productTypeOptions
+                                    }
+                                })
+                            }
+                            else {
+                                productTypeOptions[name] = [...values]
+                                options[product.productType] = productTypeOptions
+                            }
+                        })
+                    }
+                }
 
                 product.variants = product.variants.edges?.map(e => e.node)
             });
             products.forEach(product => product.variants.forEach(variant => {
                 variant.selectedOptions.forEach(({ name, value }) => {
                     variant[name.toLowerCase()] = value;
-                }); 
-                
+                });
+
                 delete variant.selectedOptions;
             }));
 
@@ -88,7 +111,7 @@ export async function fetchAllProducts(admin) {
 
         }
 
-        return { products: allProducts };
+        return { products: allProducts, options: options, productTypes: productTypes };
     } catch (error) {
         throw new Error(error.message);
     }

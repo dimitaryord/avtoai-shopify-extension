@@ -59,16 +59,16 @@ export default class ChatSection{
             text: "How can i assist you with this store?"
         })
 
-        const greetingBody = styled.p({
-            id: "avtoai-assistant-chat-section-greeting-body",
-            style: {
-                fontSize: "1.25rem",
-                textAlign: "center",
-                marginTop: "1rem",
-                color: "var(--avtoai-assistant-colors-text-color)"
-            },
-            text: "Press the assistant button to start a voice conversation"
-        })
+        // const greetingBody = styled.p({
+        //     id: "avtoai-assistant-chat-section-greeting-body",
+        //     style: {
+        //         fontSize: "1.25rem",
+        //         textAlign: "center",
+        //         marginTop: "1rem",
+        //         color: "var(--avtoai-assistant-colors-text-color)"
+        //     },
+        //     text: "Press the assistant button to start a voice conversation"
+        // })
 
         const footerText = styled.p({
             id: "avtoai-assistant-chat-section-greeting-body",
@@ -84,7 +84,7 @@ export default class ChatSection{
         greetingContainer.appendChild(greetingButton)
         greetingButton.appendChild(designedGreetingIcon)
         greetingContainer.appendChild(greetingTitle)
-        greetingContainer.appendChild(greetingBody)
+        // greetingContainer.appendChild(greetingBody)
         greetingContainer.appendChild(footerText)
 
         const chatContainer = styled.div({

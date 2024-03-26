@@ -20,7 +20,6 @@ class API {
 
             if(res.ok){
                 const data = await res.json()
-                console.log(data)
                 return data
             }
             console.error({ error: res });
@@ -40,7 +39,6 @@ class API {
 
             if(res.ok){
                 const data = await res.json()
-                console.log(data)
                 return data
             }
 
