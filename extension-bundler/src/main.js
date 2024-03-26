@@ -119,6 +119,7 @@ async function setupExtension() {
 
                 websocket.onmessage = async (message) => {
                     const messageData = JSON.parse(message.data)
+                    console.log(messageData)
                     if (messageData.status === "running" && messageData.step === "message_creation") {
                         if(writer) writer.updateMessage((currentText) => currentText + messageData.chunk)
                     }

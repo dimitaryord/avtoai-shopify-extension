@@ -30,6 +30,7 @@ export async function fetchByProductHandleAndVariantId({ productHandle, variantI
       })
     })
     return {
+      productHandle: productHandle,
       defaultVariantId: filteredVariants ? filteredVariants[0] ? filteredVariants[0].id : null : null,
       variants: details,
       options: product.options
@@ -58,7 +59,7 @@ export async function addItemToCart(variantId, quantity) {
   }
 
   try {
-    const response = await fetch('/cart/add.js', {
+    const response = await fetch(window.Shopify.routes.root + 'cart/add.js', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -67,8 +68,8 @@ export async function addItemToCart(variantId, quantity) {
     })
 
     if (response.ok) {
-      const cart = await response.json()
-      console.log('Item added to cart', cart)
+      await response.json()
+      console.log('Item added to cart')
     } else {
       console.error('Failed to add item to cart. Status code:', response.status)
     }

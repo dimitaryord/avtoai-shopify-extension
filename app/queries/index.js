@@ -1,4 +1,7 @@
 export async function fetchAllProducts(admin) {
+    const productTypes = []
+    const options = {}
+
     let allProducts = [];
     let hasNextPage = true;
     let lastCursor = null;
@@ -11,6 +14,10 @@ export async function fetchAllProducts(admin) {
                     title
                     productType
                     tags
+                    options {
+                        name
+                        value
+                    }
                     description
                     onlineStoreUrl
                     variants(first: 50) {
@@ -55,7 +62,16 @@ export async function fetchAllProducts(admin) {
             const edges = data?.products?.edges;
             const products = edges?.map(edge => edge.node)
 
-            products.forEach(product => product.variants = product.variants.edges?.map(e => e.node));
+            products.forEach(product => {
+                if(!productTypes.includes(product.productType)) productTypes.push(product.productType)
+                product.options.forEach(({name, value}) => {
+                    if(options.hasOwnProperty(name)){
+                        const currentOptions = options[name]
+                    }
+                })
+
+                product.variants = product.variants.edges?.map(e => e.node)
+            });
             products.forEach(product => product.variants.forEach(variant => {
                 variant.selectedOptions.forEach(({ name, value }) => {
                     variant[name.toLowerCase()] = value;

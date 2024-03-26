@@ -5,21 +5,25 @@ import createLoadingSpinnerSVG from "../../svg/loadingIconSVG.js"
 import styled from "../lib2.js"
 
 export class Message {
+    static lastMessageType = "empty"
+
     constructor(messageText, role, innerContent, { paddingBlock=false, paddingInline=true, border=false }) {
         const messageContainer = styled.div({
             id: "avtoai-assistant-message-container",
             style: {
-                maxWidth: "80%",
+                maxWidth: "90%",
                 borderRadius: "10px",
                 border: border ? "1px solid var(--avtoai-assistant-colors-text-color)" : "none",
                 paddingInline: paddingInline ? "1.25em" : "0px",
                 paddingBlock: paddingBlock ? "1em" : "0px",
-                marginBottom: "1.5em",
+                marginTop: Message.lastMessageType === "empty" ? "0em"
+                 : Message.lastMessageType === "assistant" && role === "assistant" ? "0.5em" : "1em",
                 alignSelf: role === "assistant" ? "flex-start" : "flex-end",
                 backgroundColor: role === "assistant" ? "var(--avtoai-assistant-colors-message-assistant-bg)" : 
                 "var(--avtoai-assistant-colors-color-theme)",
             }
         })
+        Message.lastMessageType = role
 
         const messageP = styled.p({
             id: "avtoai-assistant-message",
@@ -99,7 +103,7 @@ export class LoadingMessageElement extends Message {
 }
 
 export class ProductInfoMessage extends Message {
-    constructor(container, { defaultVariantId, variants, options }) {
+    constructor(container, { productHandle, defaultVariantId, variants, options }) {
         const defaultOption = defaultVariantId ? variants.find(variant => variant.id === defaultVariantId) : variants[0]
 
         const messageContainer = styled.div({
@@ -153,6 +157,7 @@ export class ProductInfoMessage extends Message {
 
         this.variants = variants
         this.selectedVariant = defaultOption
+        this.productHandle = productHandle
         this.selectedOptions = [...defaultOption.options]
 
         this.image = messageImage
@@ -188,75 +193,11 @@ export class ProductInfoMessage extends Message {
         return optionsContainer
     }
 
-    createBlockBorderSelection(options, optionElement, index){
-        if(index == options.length - 1){
-            if(index !== 0){
-                if(options[index - 1].style.opacity && options[index - 1].style.opacity !== "1"){
-                    styled.designComponent(optionElement, {
-                        style: {
-                            borderLeft: "2px solid black"
-                        }
-                    })
-
-                    styled.designComponent(options[index - 1], {
-                        style: {
-                            borderRight: "none"
-                        }
-                    })
-                }   
-            }
-        }
-        else if(index === 0){
-            if(index !== options.length - 1){
-                if(options[index + 1].style.opacity && options[index + 1].style.opacity !== "1"){
-                    styled.designComponent(optionElement, {
-                        style: {
-                            borderRight: "2px solid black"
-                        }
-                    })
-
-                    styled.designComponent(options[index + 1], {
-                        style: {
-                            borderLeft: "none"
-                        }
-                    })
-                }
-            }
-        }
-        else{
-            if(options[index - 1].style.opacity && options[index - 1].style.opacity !== "1"){
-                styled.designComponent(optionElement, {
-                    style: {
-                        borderLeft: "2px solid black"
-                    }
-                })
-
-                styled.designComponent(options[index - 1], {
-                    style: {
-                        borderRight: "none"
-                    }
-                })
-            }
-            if(options[index + 1].style.opacity && options[index + 1].style.opacity !== "1"){
-                styled.designComponent(optionElement, {
-                    style: {
-                        borderRight: "2px solid black",
-                    }
-                })
-
-                styled.designComponent(options[index + 1], {
-                    style: {
-                        borderLeft: "none"
-                    }
-                })
-            }
-        }
-    }
 
     selectOption(target, type){
         const options = Array.from(target.parentElement.children)
 
-        options.forEach((optionElement, index) => {
+        options.forEach((optionElement) => {
             if(optionElement === target){
                 if(type === "color")
                     styled.designComponent(optionElement, {
@@ -270,8 +211,6 @@ export class ProductInfoMessage extends Message {
                             opacity: "1"
                         }
                     })
-                    this.createBlockBorderSelection(options, optionElement, index)
-                    optionElement.onmouseenter = () => this.createBlockBorderSelection(options, optionElement, index)
                 }
                     
             }
@@ -288,7 +227,6 @@ export class ProductInfoMessage extends Message {
                             opacity: null
                         }
                     })
-                    optionElement.onmouseenter = () => this.createBlockBorderSelection(options, optionElement, index)
                 }
             }
         })
@@ -363,9 +301,9 @@ export class ProductInfoMessage extends Message {
                         padding: "0.5rem",
                         borderTop: "2px solid black",
                         borderBottom: "2px solid black",
-                        borderLeft: "2px solid black",
+                        borderLeft: option.values.indexOf(optionValue) === 0 ? "2px solid black" : "1px solid black",
                         borderRight: 
-                            option.values.indexOf(optionValue) === option.values.length - 1 ? "2px solid black" : "none",
+                            option.values.indexOf(optionValue) === option.values.length - 1 ? "2px solid black" : "1px solid black",
                         borderRadius: 
                             option.values.indexOf(optionValue) === option.values.length - 1 ? "0px 10px 10px 0px"
                             : option.values.indexOf(optionValue) === 0 ? "10px 0px 0px 10px" : "none"
@@ -436,6 +374,10 @@ export class ProductInfoMessage extends Message {
             },
             text: "Add to Cart"
         })
+
+        viewProductButton.onclick = () => {
+            window.open(window.Shopify.routes.root + `products/${this.productHandle}`)
+        }
 
         addToCartButton.onclick = async () => {
             await addItemToCart(this.selectedVariant.id, 1)

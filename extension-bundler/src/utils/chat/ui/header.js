@@ -85,7 +85,9 @@ export default class ChatHeader {
         titleIcon.src = assistantImage
         titleIcon.alt = 'avtoai-assistant-chat-bot-icon'
         const designedTitleIcon = styled.designComponent(titleIcon, {
-            style: { width: "50px", height: "50px", borderRadius: "10px", }
+                style: { width: "50px", height: "50px", borderRadius: "10px", 
+                filter: "drop-shadow(0px 0px 1px var(--avtoai-assistant-colors-color-theme-text-color))" 
+            }
         })
 
         const titleText = styled.h3({
