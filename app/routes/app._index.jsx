@@ -1,59 +1,64 @@
-import React, { useState } from 'react';
-import FirstStep from '../steps/FirstStep';
-import SecondStep from '../steps/SecondStep';
-import ThirdStep from '../steps/ThirdStep';
-import { ProgressBar } from "@shopify/polaris";
+import React from "react";
+import {Page, Banner, CalloutCard, EmptyState, Text } from "@shopify/polaris";
 
-function MainForm() {
-    const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 3; // Updated to reflect 4 total steps
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
-    // Function to proceed to the next step
-    const nextStep = () => {
-        if(currentStep < totalSteps) {
-            setCurrentStep(currentStep + 1);
-        }
-        // Add any final step handling if necessary
-    };
+import { authenticate } from "../shopify.server";
+import db from "../db";
 
-    // Function to go back to previous step
-    const prevStep = () => {
-        if(currentStep > 1) {
-            setCurrentStep(currentStep - 1);
-        }
-    };
+export const loader = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
+  const user = await db.findUserByShop(session.shop);
 
-    // Function to render the current step
-    const renderStep = () => {
-        switch(currentStep) {
-            case 1:
-                return <FirstStep nextStep={nextStep} />;
-            case 2:
-                return <SecondStep nextStep={nextStep} prevStep={prevStep} />;
-            case 3:
-                return <ThirdStep prevStep={prevStep} />;
-            default:
-                // In case of an undefined step, redirect to the first step
-                return <FirstStep nextStep={nextStep} />;
-        }
-    };
-    
-    
+  return json({ hasAssistant: user ? true : false });
+}
 
-    // Calculate the progress (for the ProgressBar)
-    const progress = (currentStep / totalSteps) * 100;
+function FirstStep() {
+  const { hasAssistant } = useLoaderData();
 
+  if (!hasAssistant)
     return (
-        <div>
-            {renderStep()}
-            {/* Progress Indicator */}
-            <ProgressBar progress={progress} size="small" />
-            {/* Navigation Buttons */}
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-           
-            </div>
+      <div className="w-full sm:h-[80vh] min-[480px]:h-[90vh] h-screen flex flex-col items-center justify-center">
+        <Text variant="headingXl" as="h1" >Thank you for installing AVTO</Text>
+        <EmptyState
+          heading="Welcome to the future of Ecom"
+          action={{ content: 'Setup an assistant', url: "/app/setup" }}
+          secondaryAction={{
+            content: 'Contact us',
+            url: 'https://calendly.com/avtoai/demo',
+          }}
+          image="no-assistants.png">
+          <p>There are no currently available assistants. Create a new one</p>
+        </EmptyState>
+      </div>
+    );
+  else
+    return (
+      <Page fullWidth>
+        <div className="p-8 space-y-2">
+          <Banner title="Assistant Updated">
+            <p className="text-xs">
+              This assistant was last updated on March 26 2024.
+            </p>
+          </Banner>
+          <CalloutCard
+            title="Update your assistant"
+            primaryAction={{
+              content: "Edit Assistant",
+              url: "/app/setup",
+            }}
+            secondaryAction={{
+              content: "Get help with setting it up",
+              url: "https://calendly.com/avtoai/demo",
+            }}
+            illustration="avto.svg"
+          >
+            <p>Change the information given to AVTO.</p>
+          </CalloutCard>
         </div>
+      </Page>
     );
 }
 
-export default MainForm;
+export default FirstStep;

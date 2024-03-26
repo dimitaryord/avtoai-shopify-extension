@@ -1,0 +1,105 @@
+<div id="avtoai-assistant-bot-container" class="avtoai-assistant-container"
+  data-avotai-theme-app="{{ block.settings.theme }}"
+  data-avtoai-color-theme-app="{{ block.settings.color_theme }}"
+  data-avtoai-chat-position="{{ block.settings.chat_position }}"
+  {% if block.settings.chat_image != blank %}
+    data-avtoai-chat-image="{{ block.settings.chat_image |  image_url }}"
+  {% else %}
+    data-avtoai-chat-image="{{ 'default_widget_icon.png'| asset_url }}"
+  {% endif %} >
+
+
+  {% render 'widget_button',  
+    position: block.settings.widget_button_position, 
+    mainColor: block.settings.widget_button_color,
+    imageUrl: block.settings.widget_image
+  %}
+
+</div>
+
+
+<link href='https://fonts.googleapis.com/css?family=Roboto Slab' rel='stylesheet'>
+<link rel="stylesheet" type="text/css" href="{{ 'style.css' | asset_url }}">
+
+<script type="module" src="{{ 'index.js' | asset_url }}" defer></script>
+
+
+{% schema %}
+  {
+    "name": "Avto AI Assistant",
+    "target": "body",
+    "settings": [
+      {
+        "type": "radio",
+        "id": "theme",
+        "label": "Theme",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light"
+          },
+          {
+            "value": "dark",
+            "label": "Dark"
+          }
+        ],
+        "default": "light"
+      },
+      {
+        "type": "color",
+        "id": "color_theme",
+        "label": "Color Theme",
+        "default": "#222831"
+      },
+      {
+        "type": "select",
+        "id": "chat_position",
+        "label": "Chat Position",
+        "options": [
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "select",
+        "id": "widget_button_position",
+        "label": "Widget Button Position",
+        "options": [
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "color",
+        "id": "widget_button_color",
+        "label": "Widget Button Color",
+        "default": "#000000"
+      },
+      {
+        "type": "image_picker",
+        "id": "chat_image",
+        "label": "Chat Assistant Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "widget_image",
+        "label": "Widget Image"
+      }
+    ]
+  }
+{% endschema %}
+

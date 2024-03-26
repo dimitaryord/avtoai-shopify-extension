@@ -1,53 +1,67 @@
-import React from 'react';
-import {
-  Page,
-  Layout,
-  LegacyCard,
-  FormLayout,
-  TextField,
-  TextContainer,
-  Text,
-} from '@shopify/polaris';
+import { Page, InlineGrid, Card, BlockStack, Box, Text, Divider } from '@shopify/polaris'
+import AssistantCard from '../components/navigation/assistantCard';
+import InformationSide from '../components/navigation/informationSide';
+import DocumentationCard from '../components/navigation/documentationCard';
 
-// Components Importing
-import { VideoExample } from '../components/menu/menu_video';
-import { DropZoneExample } from '../components/menu/menu_drop';
-import {BookCall} from '../components/menu/menu_book_call_button';
-import {Section} from '../components/menu/menu_section1';
-import { Section2 } from '../components/menu/menu_section2';
+export default function Menu() {
 
-export default function AdditionalPage() {
-  return (
-    <Page>
-      <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white p-10 flex justify-center items-center mb-12">
-        <h1 className="text-6xl font-bold">Settings</h1>
-      </div>
-      <Section />
-      <div style={{ marginTop: 'var(--p-space-1200)' }}>
-        <VideoExample />
-      </div>
-      <div className="bg-gradient-to-r p-10 flex justify-center items-center mb-2 mt-10">
-        <h1 className="text-3xl font-bold justify-center"> Please upload the logo that you would like to have</h1>
-
-      </div>
-
-      
-      <DropZoneExample />
+    return (
+        <Page >
+            <main class="grid md:grid-cols-2 gap-4 grid-cols-1">
+                <BlockStack gap="400" className="px-2 ">
+                    <div className="text-center md:text-left mb-11 md:mb-0  ">
+                        <Text variant="heading3xl" as="h2">Assistants</Text>
+                    </div>
+                    <Card roundedAbove="sm">
+                        <BlockStack gap="400">
+                            <AssistantCard heading="Assistant 1" status="Active" link="https://link" />
+                        </BlockStack>
+                    </Card>
+                    <Card roundedAbove="sm">
+                        <BlockStack gap="400">
+                            <AssistantCard heading="Assistant 1" status="Active" link="https://link" />
+                        </BlockStack>
+                    </Card>
+                    <Card roundedAbove="sm">
+                        <BlockStack gap="400">
+                            <AssistantCard heading="Assistant 1" status="Active" link="https://link" />
+                        </BlockStack>
+                    </Card>
+                </BlockStack>
 
 
-      <div className='mt-10'>
-        <Section2 />
-      </div>
+                <BlockStack gap={{ lg: "400", md: "200" }} className="px-2">
+                    <div className="text-center md:text-left my-11 md:my-0 ">
+                        <Text variant="heading3xl" as="h2">Information</Text>
+                    </div>
+
+                    <Card roundedAbove="sm">
+                        <BlockStack gap="1200">
+                            <BlockStack gap="500">
+                                <BlockStack gap="500">
+                                    <Text variant="heading2xl" as="h3">News</Text>
+                                    <Divider borderColor="border-inverse" />
+                                </BlockStack>
+
+                                <BlockStack gap="500">
+                                    <InformationSide version="Version 5" description="An upgraded version of the current system has been created! New product matching and more..." gap="500" />
+                                    <InformationSide version="Version 5" description="An upgraded version of the current system has been created! New product matching and more..." gap="500" />
+                                    <InformationSide version="Version 5" description="An upgraded version of the current system has been created! New product matching and more..." gap="500" />
+                                </BlockStack>
+                            </BlockStack>
+
+                            <Divider borderColor="border-inverse" />
 
 
-      <div className="bg-gradient-to-r p-10 flex justify-center items-center mb-12">
-        <BookCall />
-      </div>
+                            <DocumentationCard version="Documentation" description="We present to you the Avtoai documentation. You can go through it and learn about the capability of our ai assistant." gap="1000" />
 
 
+                        </BlockStack>
+                    </Card>
 
-    </Page>
-  );
+                </BlockStack>
+
+            </main>
+        </Page>
+    )
 }
-
-

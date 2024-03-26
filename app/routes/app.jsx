@@ -5,6 +5,7 @@ import { boundary } from "@shopify/shopify-app-remix/server";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import { authenticate } from "../shopify.server";
 
+
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 export const loader = async ({ request }) => {
@@ -19,10 +20,9 @@ export default function App() {
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <ui-nav-menu>
-        <Link to="/app" rel="home">
-          Home
-        </Link>
+        <Link to="/app/setup">Assistant Setup</Link>
         <Link to="/app/menu">Menu</Link>
+
       </ui-nav-menu>
       <Outlet />
     </AppProvider>

@@ -1,0 +1,52 @@
+:root{
+    --avtoai-assistant-colors-scrollbar: #afafaf;
+    --avtoai-assistant-colors-message-assistant-bg: #f6f6f7;
+}
+
+.avtoai-assistant-container{
+    position: fixed;
+    height: 0;
+    width: 0;
+    top: 0px;
+    left: 0px;
+    z-index:9999;
+    font-family: 'Roboto Slab', sans-serif;
+}
+
+.avtoai-assistant-p-text{
+    font-size: 16px;
+    color: var(--avtoai-assistant-colors-text-color);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.avtoai-assistant-p-text-shadow{
+    font-size: 16px;
+    color: var(--avtoai-assistant-colors-text-color);
+    font-weight: bold;
+    text-shadow: 1px 1px 2px var(--avtoai-assistant-colors-text-shadow);
+}
+.avtoai-assistant-button-opacity-hover{
+    opacity: 0.6;
+}
+
+.avtoai-assistant-button-opacity-hover-4{
+    opacity: 0.4;
+}
+
+.avtoai-assistant-button-opacity-hover:hover, .avtoai-assistant-button-opacity-hover-4:hover{
+    opacity: 1;
+}
+
+.avtoai-assistant-button-scale-hover{
+    transform: scale(1);
+    transition: 0.5s transform; 
+}
+
+.avtoai-assistant-button-scale-hover:hover{
+    transform: scale(1.1);
+}
+
+
+
+
