@@ -173,7 +173,7 @@ export class ProductInfoMessage extends Message {
     }
 
     formatPrice(price) {
-        return new Intl.NumberFormat('en-emodeng', { style: 'currency', currency: 'USD' }).format(price)
+        return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(price)
     }
 
     createOptions(options){
