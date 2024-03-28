@@ -1,5 +1,4 @@
-import {Icon, TextField, Text} from '@shopify/polaris';
-import { PlusCircleIcon } from "@shopify/polaris-icons";
+import {TextField, Text} from '@shopify/polaris';
 
 function Stack({id, label="", placeholder="", stack, max, valueFunc, onChange, addFunc }) {
   return (
@@ -23,7 +22,6 @@ function Stack({id, label="", placeholder="", stack, max, valueFunc, onChange, a
                     {
                         index === stack.length - 1 && max !== index + 1 ? 
                         <button onClick={addFunc} className="ml-[.25rem] flex space-x-[.25rem]">
-                            <Icon source={PlusCircleIcon} /> 
                             <Text variant="bodyMd" as="p">Add Starter Question</Text>
                         </button> : null
                     }

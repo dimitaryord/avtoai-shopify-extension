@@ -1,5 +1,4 @@
-import { Text, Card, Icon } from '@shopify/polaris';
-import { MinusCircleIcon } from "@shopify/polaris-icons";
+import { Text, Card } from '@shopify/polaris';
 import React from 'react';
 
 
@@ -18,7 +17,6 @@ export default function AssistantCard({ heading, status, link, image, tone }) {
                 <div class="space-y-5">
                    
                     <div class="flex items-start mr-16">
-                    <Icon source={MinusCircleIcon} tone="critical" />
                     <Text as="p" fontWeight="bold">{status}</Text>
 
                     </div>
