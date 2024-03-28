@@ -1,4 +1,5 @@
 import { Text, Card, Icon } from '@shopify/polaris';
+import { MinusCircleIcon } from "@shopify/polaris-icons";
 import React from 'react';
 
 
