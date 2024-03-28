@@ -12,6 +12,7 @@ database.sqlite
 
 .env
 shopify.app.toml
+shopify.app.avto.toml
 package-lock.json
 yarn.lock
 
