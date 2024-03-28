@@ -1,5 +1,4 @@
 import {Icon, TextField, Text} from '@shopify/polaris';
-import {PlusCircleIcon} from '@shopify/polaris-icons';
 
 function Stack({id, label="", placeholder="", stack, max, valueFunc, onChange, addFunc }) {
   return (
