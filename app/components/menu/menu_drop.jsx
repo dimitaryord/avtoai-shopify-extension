@@ -1,5 +1,4 @@
 import {DropZone, LegacyStack, Thumbnail, Text} from '@shopify/polaris';
-import {NoteMinor} from '@shopify/polaris-icons';
 import {useState, useCallback} from 'react';
 
 export function DropZoneExample() {

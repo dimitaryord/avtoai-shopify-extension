@@ -1,11 +1,6 @@
 import { Text, Card, Icon } from '@shopify/polaris';
 import React from 'react';
 
-import {
-    MinusCircleIcon,
-    PlusCircleIcon
-  } from '@shopify/polaris-icons'
-
 
 export default function AssistantCard({ heading, status, link, image, tone }) {
 
