@@ -2,7 +2,7 @@
 
 client_id = "fece4918c1f3f02265d259c2741b5ecd"
 name = "AVTO"
-application_url = "https://wash-symantec-moms-analyzed.trycloudflare.com"
+application_url = "https://turning-charming-learners-stores.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_products"
 
 [auth]
 redirect_urls = [
-  "https://wash-symantec-moms-analyzed.trycloudflare.com/auth/callback",
-  "https://wash-symantec-moms-analyzed.trycloudflare.com/auth/shopify/callback",
-  "https://wash-symantec-moms-analyzed.trycloudflare.com/api/auth/callback"
+  "https://turning-charming-learners-stores.trycloudflare.com/auth/callback",
+  "https://turning-charming-learners-stores.trycloudflare.com/auth/shopify/callback",
+  "https://turning-charming-learners-stores.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
