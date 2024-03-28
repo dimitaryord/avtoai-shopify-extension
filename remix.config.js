@@ -12,10 +12,9 @@ if (
 
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
-  ignoredRouteFiles: ["**/.*"],
+  ignoredRouteFiles: ["**/.*", "@shopify/polaris-icons"],
   appDirectory: "app",
   serverModuleFormat: "cjs",
   dev: { port: process.env.HMR_SERVER_PORT || 8002 },
   future: {},
-  external: ['@shopify/polaris-icons']
 };
