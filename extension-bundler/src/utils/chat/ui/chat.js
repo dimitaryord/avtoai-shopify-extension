@@ -47,7 +47,7 @@ export default class ChatSection{
             }
         })
 
-        const greetingTitle = styled.h2({
+        const greetingTitle = styled.h3({
             id: "avtoai-assistant-chat-section-greeting-title",
             style: {
                 textAlign: "center",
@@ -55,6 +55,7 @@ export default class ChatSection{
                 fontWeight: "bold",
                 marginBlock: "0",
                 marginTop: "2rem",
+                fontFamily: "'Roboto Slab', sans-serif"
             },
             text: "How can i assist you with this store?"
         })

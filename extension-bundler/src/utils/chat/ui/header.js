@@ -48,19 +48,19 @@ export default class ChatHeader {
 
         this.closeButtonContainer = closeButtonContainer
         this.closeButton = closeButton
+        this.menuButton = menu
     }
 
     createMenu(){
-        const menuContainer = document.createElement("div")
-        menuContainer.classList.add("avtoai-assistant-chat-menu-container")
-        menuContainer.id = "avtoai-assistant-chat-menu-container"
+        const menuContainer = styled.div({
+            id: "avtoai-assistant-chat-menu-container",
+            classes: ["avtoai-assistant-chat-menu-container"]
+        })
 
-        for(let i = 0; i < 3; i++){
-            const dot = document.createElement("div")
-            dot.style.display = "block"
-            dot.classList.add("avtoai-assistant-chat-menu-dot")
-            menuContainer.appendChild(dot)
-        }
+        styled.div({
+            classes: ["avtoai-assistant-chat-menu-dot"],
+            style: { display: "block"}
+        }).clone(3).to(menuContainer)
 
         return menuContainer
     }

@@ -1,33 +1,32 @@
 import { Element } from "../elements.js"
 import "../../styles/drawer.css"
 
+import styled from "../lib2.js"
+
 export class Drawer extends Element {
     constructor({ container, position }){
-        const sideDrawerContainer = document.createElement("div")
-        sideDrawerContainer.id = "avtoai-assistant-side-drawer-container"
+        const sideDrawerContainer = styled.div({ id: "avtoai-assistant-side-drawer-container" })
+        const sideDrawerBlur = styled.div({
+            id: "avtoai-assistant-side-drawer-blur",
+            classes: ["avtoai-assistant-side-drawer-blur"],
+            style: {
+                display: "block",
+                right: position === "right" ? "0px" : null,
+                left: position === "left" ? "0px" : null
+            }
+        }).to(sideDrawerContainer)
 
-        const sideDrawerBlur = document.createElement("div")
-        sideDrawerBlur.classList.add("avtoai-assistant-side-drawer-blur")
-        sideDrawerBlur.id = "avtoai-assistant-side-drawer-blur"
-        if(position == "right") sideDrawerBlur.style.right = "0px"
-        else if(position == "left") sideDrawerBlur.style.left = "0px"
-        sideDrawerBlur.style.display = "block"
+        const sideDrawer = styled.div({
+            id: "avtoai-assistant-side-drawer",
+            classes: ["avtoai-assistant-side-drawer"],
+            style: {
+                right: position === "right" ? "10px" : null,
+                left: position === "left" ? "10px" : null,
+                transform: position === "left" ? "translate(-110%, -50%)" : 
+                    position === "right" ? "translate(110%, -50%)": null
+            }
+        }).to(sideDrawerContainer)
 
-        const sideDrawer = document.createElement("div")
-        sideDrawer.classList.add("avtoai-assistant-side-drawer")
-        sideDrawer.id = "avtoai-assistant-side-drawer"
-
-        if(position == "right"){
-            sideDrawer.style.right = "10px"
-            sideDrawer.style.transform = "translate(110%, -50%)"
-        } 
-        else if(position == "left"){
-            sideDrawer.style.left = "10px"
-            sideDrawer.style.transform = "translate(-110%, -50%)"
-        }
-
-        sideDrawerContainer.appendChild(sideDrawerBlur)
-        sideDrawerContainer.appendChild(sideDrawer)
         super(container, sideDrawerContainer)
 
         this.side = position

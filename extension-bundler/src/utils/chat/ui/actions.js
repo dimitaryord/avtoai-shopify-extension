@@ -1,12 +1,11 @@
-import { Element } from "../../elements.js"
 import createSendButtonSVG from "../../../svg/sendButtonSVG.js"
 import createQuestionMarkSVG from "../../../svg/questionMarkSVG.js"
 import createChatIconSVG from "../../../svg/chatIconSVG.js"
 
 import styled from "../../lib2.js"
 
-export default class ActionSection extends Element {
-    constructor(container, assistantStarters){
+export default class ActionSection{
+    constructor(assistantStarters){
         const actionContainer = styled.div({
             id: "avtoai-assistant-actions-container",
             classes: ["avtoai-assistant-action-section-container"],
@@ -16,7 +15,7 @@ export default class ActionSection extends Element {
         const startersButtonContainer = styled.div({
             id: "avtoai-assistant-actions-starters-button-container",
             classes: ["avtoai-assistant-actions-starters-button-container"],
-        })
+        }).to(actionContainer)
         const startersIcon = createQuestionMarkSVG("var(--avtoai-assistant-colors-color-theme-text-color)")
         const chatIcon = createChatIconSVG("var(--avtoai-assistant-colors-color-theme-text-color)")
         startersButtonContainer.innerHTML = startersIcon
@@ -24,30 +23,48 @@ export default class ActionSection extends Element {
         const inputButtonContainer = styled.div({
             id: "avtoai-assistant-actions-input-container",
             classes: ["avtoai-assistant-actions-input-container"]
-        })
+        }).to(actionContainer)
 
-        const input = styled.input({
+        const input = styled.textarea({
             id: "avtoai-assistant-actions-input",
-            classes: ["avtoai-assistant-actions-input"]
-        })
+            classes: ["avtoai-assistant-actions-input", "avtoai-assistant-textarea-scrollbar"]
+        }).to(inputButtonContainer)
         input.placeholder = "Chat here..."
-        inputButtonContainer.appendChild(input)
 
-        const startConversationButton = styled.div({
+        this.setHeightAuto = () => {
+            if(input.style.height > input.style.maxHeight)
+                input.style.overflowY = "scroll"
+            else if(input.style.height < input.style.maxHeight)
+                input.style.overflowY = "hidden"
 
-        })
+
+            if(input.value.includes('\n') || (input.scrollHeight !== 39 && input.scrollHeight !== 51)){
+                input.style.height = "auto"
+                input.style.height = input.scrollHeight + 'px'
+                input.scrollTo(0, input.scrollHeight)
+            }
+            else input.style.height = null
+
+            if(input.value.trim().length !== 0)
+                sendButton.style.display = "flex"
+            else{
+                sendButton.style.display = "none"
+                if(!input.value.includes('\n')) 
+                    input.style.height = null
+            } 
+        }
+        input.addEventListener("input", this.setHeightAuto, false)
+
+        // const startConversationButton = styled.div({
+
+        // })
 
         const sendButton = styled.div({
             id: "avtoai-assistant-actions-send-button",
-            classes: ["avtoai-assistant-actions-send", "avtoai-assistant-actions-send-enabled"]
-        })
-        sendButton.innerHTML = createSendButtonSVG("var(--avtoai-assistant-colors-text-color)")
-        inputButtonContainer.appendChild(sendButton)
-
-        actionContainer.appendChild(startersButtonContainer)
-        actionContainer.appendChild(inputButtonContainer)
-
-        super(container, actionContainer)
+            classes: ["avtoai-assistant-actions-send", "avtoai-assistant-actions-send-enabled"],
+            style: { display: "none" }
+        }).to(inputButtonContainer)
+        sendButton.innerHTML = createSendButtonSVG("var(--avtoai-assistant-colors-text-color)", "avtoai-assistant-actions-send-icon")
 
         const starters = this.createStarters(assistantStarters)
         
@@ -71,6 +88,20 @@ export default class ActionSection extends Element {
                 startersButtonContainer.innerHTML = startersIcon
                 this.mode = "chat"
             }
+        }
+
+        input.onfocus = () => {
+            if(actionContainer.contains(startersButtonContainer)){
+                actionContainer.removeChild(startersButtonContainer)
+                inputButtonContainer.style.left = "0px"
+            }
+        }
+        input.onblur = () => {
+            if(actionContainer.contains(this.startersContent))
+                actionContainer.insertBefore(startersButtonContainer, this.startersContent)
+            else if(actionContainer.contains(inputButtonContainer))
+                actionContainer.insertBefore(startersButtonContainer, inputButtonContainer)
+            inputButtonContainer.style.left = "0.5rem"
         }
 
     }
@@ -118,11 +149,11 @@ export default class ActionSection extends Element {
                     width: "fit-content",
                     padding: "1rem",
                     fontSize: "14px",
-                    borderRadius: "50px",
+                    borderRadius: "25px",
                     color: "var(--avtoai-assistant-colors-color-theme-text-color)",
                     backgroundColor: "var(--avtoai-assistant-colors-color-theme)",
                     border: "var(--avtoai-assistant-colors-widget-box-border) solid 1px",
-                    boxShadow: "var(--avtoai-assistant-colors-text-color) 0.1rem 0.1rem",
+                    boxShadow: "var(--avtoai-assistant-colors-color-border-shadow) 0.1rem 0.1rem",
                 },
                 text: starter
             })

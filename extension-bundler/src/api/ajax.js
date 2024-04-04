@@ -47,7 +47,7 @@ export async function fetchProductAndVariantDetails(codeOutput) {
 
   const promises = getProductFetchDetails(codeOutput, fetchByProductHandleAndVariantId)
   const data = await Promise.all(promises)
-  return data.filter(details => details !== null)
+  return data.filter(details => details !== null).slice(0, 10)
 }
 
 export async function addItemToCart(variantId, quantity) {

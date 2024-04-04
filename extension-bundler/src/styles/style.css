@@ -1,6 +1,6 @@
 :root{
     --avtoai-assistant-colors-scrollbar: #afafaf;
-    --avtoai-assistant-colors-message-assistant-bg: #f6f6f7;
+    --avtoai-assistant-chat-app-message-font-size: 16px;
 }
 
 .avtoai-assistant-container{
@@ -45,6 +45,26 @@
 
 .avtoai-assistant-button-scale-hover:hover{
     transform: scale(1.1);
+}
+
+.avtoai-assistant-textarea-scrollbar::-webkit-scrollbar{
+    height: 5px;
+    width: 5px;
+    padding: 1px;
+    background: transparent;
+}
+
+.avtoai-assistant-textarea-scrollbar::-webkit-scrollbar-track{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background: transparent;
+    margin-inline: 0.5rem;
+    border-radius: 5px;
+}
+
+.avtoai-assistant-textarea-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--avtoai-assistant-colors-scrollbar);
+    border-radius: 50px;
 }
 
 

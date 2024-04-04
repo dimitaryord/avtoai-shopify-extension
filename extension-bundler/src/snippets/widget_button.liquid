@@ -5,14 +5,14 @@
             {% if imageUrl != blank %}
                 <img loading="lazy" src="{{ imageUrl | image_url }}" 
                 alt="avtoai-assistant-widget-button-image"
-                width="50px"
-                height="50px" 
+                width="40px"
+                height="40px" 
                 style="border-radius: 50%;" >
             {% else %}
                 <img loading="lazy" src="{{ 'default_widget_icon.png'| asset_url }}" 
                 alt="avtoai-assistant-widget-button-image"
-                width="50px"
-                height="50px" 
+                width="40px"
+                height="40px" 
                 style="border-radius: 50%;" >
             {% endif %}
         </div>
@@ -68,21 +68,30 @@
     left: 5px;
 }
 
+@media screen and (max-width: 768px) {
+   .avtoai-assistant-widget-button-position-left{
+        left: 2px;
+    }
+   .avtoai-assistant-widget-button-position-right{
+        right: 2px;
+    }
+}
+
 .avtoai-assistant-widget-button-main{
   background-color: {{ mainColor }};
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 90px;
+  width: 80px;
   height: 60px;
-  border-radius: 10px;
+  border-radius: 25px;
 }
 
 .avtoai-assistant-widget-button-triangle{
     width: 0; 
     height: 0; 
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
     border-bottom: 15px solid {{ mainColor }};
     position:relative;
     top: 40px;

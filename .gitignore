@@ -10,9 +10,12 @@ node_modules
 /prisma/dev.sqlite-journal
 database.sqlite
 
+.env.prod
 .env
+.env.avto-test
 shopify.app.toml
 shopify.app.avto.toml
+shopify.app.avto-test.toml
 package-lock.json
 yarn.lock
 

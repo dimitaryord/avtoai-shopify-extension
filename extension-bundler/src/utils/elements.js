@@ -22,14 +22,6 @@ class TextP extends Element {
     }
 }
 
-class ThemeTextP extends Element {
-
-}
-
-class ThemeHeading extends Element {
-
-}
-
 class ThemeButton extends Element {
     constructor(container, text) {
         const button = styled.button({

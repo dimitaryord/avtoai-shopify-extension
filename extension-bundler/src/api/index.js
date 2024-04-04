@@ -22,7 +22,9 @@ class API {
                 const data = await res.json()
                 return data
             }
-            console.error({ error: res });
+
+            const error = await res.json()
+            console.error({ error: error })
         }
         catch(error) {
             console.log(error)
@@ -42,7 +44,8 @@ class API {
                 return data
             }
 
-            console.error({ error: res });
+            const error = await res.json()
+            console.error({ error: error })
         }
         catch(error) {
             console.log(error)

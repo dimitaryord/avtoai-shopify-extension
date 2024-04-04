@@ -2,7 +2,7 @@ import { configureGlobalCSSThemeVariables } from "./utils/config.js"
 import { getWidgetButton, getContainer } from "./utils/static.js"
 
 import { Drawer } from "./utils/chat/drawer.js"
-import ChatApp from "./utils/chat/chatApp.js"
+import ChatApp from "./utils/chat/app/chatApp.js"
 
 import api from "./api/index.js"
 import { connectWebSocket } from "./api/ws.js"
@@ -10,7 +10,7 @@ import { connectWebSocket } from "./api/ws.js"
 import { setItem, getItem } from "./store/session.js"
 import { mapMessages } from "./utils/chat/messages.js"
 import { fetchProductAndVariantDetails } from "./api/ajax.js"
-import { MessageElement, LoadingMessageElement, ProductInfoMessage } from "./utils/chat/messageElements.js"
+import { MessageElement, LoadingMessageElement, ProductInfoMessage } from "./utils/chat/messageElements/index.js"
 
 import "./styles/style.css"
 import "./styles/animations.css"
@@ -54,7 +54,7 @@ async function setupExtension() {
         assistantStarters: assistantStarters ? assistantStarters : ["What does this shop sell?"],
         assistantImage: chatImageUrl,
         disableForMessageSent: false,
-    })
+    }, { defaultTheme: appTheme })
 
 
 
@@ -84,13 +84,12 @@ async function setupExtension() {
 
             let accessUrl
             const thread = getItem("avtoai-assistant-chat-thread")
-            const assistantName = getItem("avtoai-assistant-chat-name")
 
-            if (!thread || !assistantName) {
+            if (!thread) {
                 const res = await api.get("/create/thread")
 
-                app.sections.headerSection.setTitle(res.assistantName)
-                app.sections.actionSection.setStarters(res.assistantStarters)
+                app.setTitle(res.assistantName)
+                app.setStarters(res.assistantStarters)
 
                 accessUrl = res.accessUrl
 
@@ -108,6 +107,7 @@ async function setupExtension() {
                     mapMessages({
                         container: app.sections.chatSection.content,
                         messages: res.messages.reverse(),
+                        cache: getItem("avtoai-assistant-chat-cache")
                     })
                 }
 
@@ -135,9 +135,14 @@ async function setupExtension() {
                             writer = new LoadingMessageElement(app.sections.chatSection.content)
                     }
                     else if(messageData.status === "done" && messageData.step === "code_interpreter"){
-                        console.log(messageData.code)
                         const products = await fetchProductAndVariantDetails(messageData.code)
-                        products.forEach(product => new ProductInfoMessage(app.sections.chatSection.content, product))
+                        let productsCache = []
+
+                        products.forEach(product =>
+                            productsCache.push(new ProductInfoMessage(app.sections.chatSection.content, product).data)
+                        )
+
+                        setItem("avtoai-assistant-chat-cache", (currentValue) => [...currentValue, ...productsCache], [])
                     }
                 }
             }

@@ -1,6 +1,6 @@
-import { Message } from "./messageElements.js"
-import { convertMarkdownToHTML } from "./markdownSupport.js";
-
+import { Message } from "./messageElements/messageElement.js"
+import { ProductInfoMessage } from "./messageElements/productMessage.js"
+import { convertMarkdownToHTML } from "./markdownSupport.js"
 
 export function removeMessages(container, messages=null, staticAddedMessages=0){
     if(container.childElementCount === 0) {
@@ -17,6 +17,20 @@ function removeAnnotations(message, annotations) {
     if(!annotations || annotations.length === 0) return
     for(let annotation of annotations){
         message.textContent = message.textContent.replace(annotation.text, "")
+    }
+}
+
+function createCachedProductMessages(container, cache){
+    const children = Array.from(container.children)
+    for(let data of cache){
+        const { index, ...product } = data
+        const nextMessage = children[index]
+
+        if(nextMessage !== undefined)
+           children.splice(index, 0, new ProductInfoMessage(container, product, nextMessage).content)
+        else if(index >= children.length)
+            children.push(new ProductInfoMessage(container, product).content)
+
     }
 }
 
@@ -43,7 +57,7 @@ function extractProduct(message) {
     }
 }
 
-export async function mapMessages({container, messages, staticAddedMessages}){
+export async function mapMessages({container, messages, cache, staticAddedMessages}){
     const { initConversation, newMessages } = removeMessages(container, messages, staticAddedMessages)
     const userMessageCopy = new Message("", "user", null, {}).content
     const assistantMessageCopy = new Message("", "assistant", null, {}).content
@@ -71,4 +85,8 @@ export async function mapMessages({container, messages, staticAddedMessages}){
             extractProduct(clone.children[0])
         }
     }
+
+    if(cache) 
+        createCachedProductMessages(container, cache)
+
 }

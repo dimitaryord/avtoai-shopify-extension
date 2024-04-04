@@ -3,8 +3,13 @@
  * @param {string} key The key under which to store the value.
  * @param {string} value The value to be stored.
  */
-export function setItem(key, value) {
-    sessionStorage.setItem(key, JSON.stringify(value))
+export function setItem(key, value, defaultValue=null) {
+    if(typeof value === "function"){
+        let currentValue = getItem(key)
+        if(!currentValue) currentValue = defaultValue
+        sessionStorage.setItem(key, JSON.stringify(value(currentValue)))
+    } 
+    else if(value) sessionStorage.setItem(key, JSON.stringify(value))
 }
 
 /**

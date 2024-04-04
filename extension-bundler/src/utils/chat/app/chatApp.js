@@ -1,16 +1,27 @@
-import createLoadingSpinnerSVG from "../../svg/loadingIconSVG.js"
+import createLoadingSpinnerSVG from "../../../svg/loadingIconSVG.js"
 
-import ChatHeader from "./ui/header.js"
-import ChatSection from "./ui/chat.js"
-import ActionSection from "./ui/actions.js"
+import ChatHeader from "../ui/header.js"
+import ChatSection from "../ui/chat.js"
+import ActionSection from "../ui/actions.js"
 
-import styled from "../lib2.js"
+import Settings from "../ui/settings.js"
 
-import "../../styles/chat.css"
+import styled from "../../lib2.js"
+import { PageEngine } from "./pageEngine.js"
+
+import "../../../styles/chat.css"
 
 class ChatApp {
     constructor({ drawer, assistantName, assistantStarters=[], assistantImage, startInLoading=true,
-         disableForMessageSent=true }) {
+         disableForMessageSent=true }, { defaultTheme }) {
+
+        this.pageEngine = new PageEngine(drawer.content, { 
+            defaultPage: startInLoading ? "loading" : "chat" 
+        })
+
+        const settings = new Settings(() => this.pageEngine.back(), { defaultTheme: defaultTheme })
+        this.pageEngine.createPage("settings", settings.content)
+
         const headerSection = new ChatHeader({
             container: drawer.content,
             assistantName: assistantName,
@@ -18,20 +29,19 @@ class ChatApp {
             startInLoading: startInLoading
         })
         headerSection.closeButton.onclick = () => drawer.close()
-
-        let chatSection, actionSection, loadingComponent
-
-        loadingComponent = this.createLoadingComponent()
-
-        if(startInLoading){
-            chatSection = new ChatSection(assistantImage)
-            actionSection = new ActionSection(null, assistantStarters)
-            drawer.content.appendChild(loadingComponent)
+        headerSection.menuButton.onclick = () => {
+            if(this.pageEngine.currentPage === "chat") 
+                this.pageEngine.changePage("settings")
+            else if(this.pageEngine.currentPage === "settings")
+                this.pageEngine.changePage("chat")
         }
-        else{
-            chatSection = new ChatSection(assistantImage)
-            actionSection = new ActionSection(drawer.content, assistantStarters)
-        }
+
+        const loadingComponent = this.createLoadingComponent()
+        this.pageEngine.createPage("loading", loadingComponent)
+
+        const chatSection = new ChatSection(assistantImage)
+        const actionSection = new ActionSection(assistantStarters)
+        this.pageEngine.createPage("chat", chatSection.element, actionSection.content)
 
         this.container = drawer.content
         this.loading = startInLoading
@@ -46,20 +56,41 @@ class ChatApp {
         this.runStatus = "completed"
 
         actionSection.sendButton.onclick = event => this.onSend(event, actionSection)
-        actionSection.starters.forEach(starter => {
+        for(let starter of actionSection.starters)
             starter.onclick = event => this.onSend(event, actionSection, starter.textContent)
-        }) 
 
-        document.addEventListener("keydown", async (event) => {
-            if(event.key === "Enter")
-                this.onSend(event, actionSection)
+        actionSection.input.addEventListener("keydown", async (event) => {
+            if(event.shiftKey && (event.key === "Enter" || event.keyCode === 13)){
+                event.preventDefault()
+
+                const start = actionSection.input.selectionStart
+                const end = actionSection.input.selectionEnd
+
+                actionSection.input.value = 
+                    actionSection.input.value.substring(0, start) + "\n" + actionSection.input.value.substring(end)
+
+                actionSection.input.selectionStart = actionSection.input.selectionEnd = start + 1
+                actionSection.setHeightAuto()
+            }
+            else if(event.key === "Enter") this.onSend(event, actionSection)
         })
+    }
+
+    setStarters(starters){
+        this.sections.actionSection.setStarters(starters)
+        for(let starter of this.sections.actionSection.starters)
+            starter.onclick = event => this.onSend(event, this.sections.actionSection, starter.textContent)
+    }
+
+    setTitle(title){
+        this.sections.headerSection.setTitle(title)
     }
 
     messageSentReady(){
         this.runStatus = "completed"
         this.sections.actionSection.sendButton.disabled = false
         this.sections.actionSection.sendButton.classList.add("avtoai-assistant-actions-send-enabled")
+        this.sections.actionSection.sendButton.style.display = "none"
     }
 
     messageSentStarted(){
@@ -73,13 +104,7 @@ class ChatApp {
     switchToReady(){
         if(this.loading){
             this.sections.headerSection.switchToReady()
-
-            if(this.container.contains(this.loadingComponent))
-                this.container.removeChild(this.loadingComponent)
-
-            this.container.appendChild(this.sections.chatSection.element)
-            this.container.appendChild(this.sections.actionSection.content)
-
+            this.pageEngine.changePage("chat")
             this.loading = false
         }
     }
@@ -87,15 +112,7 @@ class ChatApp {
     switchToLoading(){
         if(!this.loading){
             this.sections.headerSection.switchToLoading()
-
-            if(this.container.contains(this.sections.chatSection.element))
-                this.container.removeChild(this.sections.chatSection.element)
-
-            if(this.container.contains(this.sections.actionSection.content))
-                this.container.removeChild(this.sections.actionSection.content)
-
-            this.container.appendChild(this.loadingComponent)
-
+            this.pageEngine.changePage("loading")
             this.loading = true
         }
     }
@@ -115,14 +132,13 @@ class ChatApp {
         const loadingComponent = styled.div({
             id: "avtoai-assistant-chat-app-loading",
             style: { animation: "avtoai-assistant-spin 2s linear infinite", height: "60px" }
-        })
+        }).to(loadingContainer)
 
         loadingComponent.innerHTML = createLoadingSpinnerSVG(
             "var(--avtoai-assistant-colors-color-theme)",
             "60px", "60px"
         )
 
-        loadingContainer.appendChild(loadingComponent)
         return loadingContainer
     }
 
@@ -136,6 +152,7 @@ class ChatApp {
             this.messageSentStarted()
 
             actionSection.input.value = ""
+            actionSection.setHeightAuto()
             await this.onMessageSent(messageValue)
 
             if(this.disableForMessageSent)

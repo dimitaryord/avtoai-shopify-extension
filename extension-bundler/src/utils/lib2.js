@@ -6,12 +6,37 @@ const styled = {
         if(id) component.id = id
         if(text) component.textContent = text
 
+        component.clone = (times) => {
+            const cloned = []
+
+            for(let _ = 0; _ < times; _++)
+                cloned.push(component.cloneNode(true))
+
+            cloned.to = (container) => {
+                if(container) 
+                    cloned.forEach(clone => container.appendChild(clone))
+                return cloned
+            }
+
+            return cloned
+        }
+
+        component.to = (container) => {
+            if(container) container.appendChild(component)
+            return component
+        }
+
         return component
     },
 
     div: ({ classes, style, id, text}) => {
         const div = document.createElement('div')
         return styled.designComponent(div, { classes, style, id, text })
+    },
+
+    span: ({ classes, style, id, text }) => {
+        const span = document.createElement('span')
+        return styled.designComponent(span, { classes, style, id, text })
     },
 
     a: ({ classes, style, id, text }) => {
@@ -54,6 +79,11 @@ const styled = {
         return styled.designComponent(p, { classes, style, id, text })
     },
 
+    label: ({ classes, style, id, text }) => {
+        const label = document.createElement('label')
+        return styled.designComponent(label, { classes, style, id, text })
+    },
+
     button: ({ classes, style, id, text }) => {
         const button = document.createElement('button')
         return styled.designComponent(button, { classes, style, id, text })
@@ -63,6 +93,21 @@ const styled = {
         const input = document.createElement('input')
         return styled.designComponent(input, { classes, style, id, text })
     },
+
+    textarea: ({ classes, style, id, text }) => {
+        const textarea = document.createElement('textarea')
+        return styled.designComponent(textarea, { classes, style, id, text })
+    },
+
+    select: ({ classes, style, id, text }) => {
+        const select = document.createElement('select')
+        return styled.designComponent(select, { classes, style, id, text })
+    },
+
+    option: ({ classes, style, id, text }) => {
+        const option = document.createElement('option')
+        return styled.designComponent(option, { classes, style, id, text })
+    }
     
 }
 
