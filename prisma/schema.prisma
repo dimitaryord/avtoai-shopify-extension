@@ -9,19 +9,21 @@ datasource db {
 
 model Session {
   session_id  String    @id @default(auto()) @map("_id") @db.ObjectId
-  id          String    @unique
-  shop        String
-  state       String
+  id          String?    @unique
+  shop        String    @unique
+  state       String?
   isOnline    Boolean   @default(false)
   scope       String?
   expires     DateTime?
   accessToken String
   userId      BigInt?
+  authToken   String?  
 }
 
 model User {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
   shop                String   @unique
+  accessToken         String
   assistantId         String   @unique
   assistantName       String
   assistantStarters   String[]
